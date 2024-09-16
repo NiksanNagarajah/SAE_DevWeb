@@ -1,0 +1,56 @@
+CREATE TABLE COURS (
+  PRIMARY KEY (id_C),
+  id_C    VARCHAR(42) NOT NULL,
+  jour    VARCHAR(42),
+  heure   VARCHAR(42),
+  duree   VARCHAR(42),
+  type_C  VARCHAR(42),
+  nb_Pers VARCHAR(42),
+  id_M    VARCHAR(42) NOT NULL
+);
+
+CREATE TABLE MEMBRE (
+  PRIMARY KEY (id_M),
+  id_M       VARCHAR(42) NOT NULL,
+  nom_M      VARCHAR(42),
+  prenom_M   VARCHAR(42),
+  date_Nais  VARCHAR(42),
+  adresse    VARCHAR(42),
+  email      VARCHAR(42),
+  telephone  VARCHAR(42)
+);
+
+CREATE TABLE ADHERENT ( -- idM à changer pour idA ??? pour faire distinction entre les deux mais peut poser problème lors NATURAL JOIN
+  PRIMARY KEY (id_M),
+  poids      VARCHAR(42) NULL,
+  niveau     VARCHAR(42) NULL, 
+  FOREIGN KEY (id_M) REFERENCES MEMBRE(id_M)
+);
+
+CREATE TABLE MONITEUR (
+  PRIMARY KEY (id_M),
+  id_Moniteur VARCHAR(42) NOT NULL,
+  specialite VARCHAR(42) NULL
+  FOREIGN KEY (id_Moniteur) REFERENCES MEMBRE(id_M)
+);
+
+CREATE TABLE PONEY (
+  PRIMARY KEY (id_P),
+  id_P      VARCHAR(42) NOT NULL,
+  prenom_P  VARCHAR(42),
+  age       VARCHAR(42),
+  poids_Max VARCHAR(42)
+);
+
+CREATE TABLE RESERVER (
+  PRIMARY KEY (id_M, id_C, id_P),
+  id_M VARCHAR(42) NOT NULL,
+  id_C VARCHAR(42) NOT NULL,
+  id_P VARCHAR(42) NOT NULL
+);
+
+ALTER TABLE COURS ADD FOREIGN KEY (id_M) REFERENCES MEMBRE (id_M);
+
+ALTER TABLE RESERVER ADD FOREIGN KEY (id_P) REFERENCES PONEY (id_P);
+ALTER TABLE RESERVER ADD FOREIGN KEY (id_C) REFERENCES COURS (id_C);
+ALTER TABLE RESERVER ADD FOREIGN KEY (id_M) REFERENCES MEMBRE (id_M);
