@@ -1,5 +1,13 @@
 # SAE_DevWeb
 
+## Groupe
+
+Romain LIMA
+
+Mohamed-Amine YAHYAOUI
+
+Niksan NAGARAJAH
+
 ## Ressources
 
 ### Lien MCD Draw.io 
