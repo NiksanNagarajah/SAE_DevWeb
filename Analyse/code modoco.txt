@@ -5,7 +5,7 @@ DF, 11 ADHERENT, 0N TARIF : cotisationAnnee[INT], payeeCotisation[BOOLEAN]
 TARIF : idT[INT], descriptif[VARCHAR], montant[DECIMAL(10,2)]
 
 COMPOSE, 11 SEANCE, 1N COURS
-COURS : coursID[INT], typeC[VARCHAR], duree[INT], nbParticipants[INT], jour[VARCHAR], heureD[TIME], prix[DECIMAL(10,2)]
+COURS : coursID[INT], typeC[VARCHAR], duree[INT], nbParticipantsMax[INT], jour[VARCHAR], heureD[TIME], prix[DECIMAL(10,2)]
 /XT\ MEMBRE <- ADHERENT, MONITEUR
 MEMBRE : idM[INT], nomM[VARCHAR], prenomM[VARCHAR], dateNaissance[DATE], email[VARCHAR], telephone[VARCHAR]
 :

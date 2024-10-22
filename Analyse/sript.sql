@@ -2,7 +2,7 @@ CREATE TABLE COURS (
   coursID INT(4) PRIMARY KEY AUTO_INCREMENT,
   typeC VARCHAR(42) CHECK (typeC IN ('Collectif', 'particulier')),
   duree INT(4) CHECK (duree IN (1, 2)),
-  nbParticipants INT(4) CHECK (nbParticipants <= 10),
+  nbParticipantsMax INT(4) CHECK (nbParticipantsMax <= 10),
   jour VARCHAR(42) CHECK (jour IN ('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche')),
   heureD TIME,
   heureF TIME,
@@ -70,6 +70,7 @@ ALTER TABLE RESERVATION ADD FOREIGN KEY (idM) REFERENCES MEMBRE (idM);
 -- TRIGGER
 
 -- Vérification du poids du cavalier par rapport au poids supportable maximum du poney
+-- Et vérification du nombre de participants
 DELIMITER |
 CREATE OR REPLACE TRIGGER poidsInfPoidsMax 
 BEFORE INSERT ON RESERVATION
@@ -77,8 +78,19 @@ FOR EACH ROW
 BEGIN
   DECLARE poidsCavalier DECIMAL(10,2);
   DECLARE poidsSupportableMax DECIMAL(10,2);
-  SELECT poidsA INTO poidsCavalier FROM MEMBRE WHERE idM = :NEW.idM;
-  SELECT poidsSupportableMax INTO poidsSupportableMax FROM PONEY WHERE poneyID = :NEW.poneyID;
+  DECLARE nbParticipantsMax INT(4);
+  DECLARE nbParticipantsActuel INT(4);
+
+  SELECT nbParticipantsMax INTO nbParticipantsMax FROM COURS WHERE coursID = NEW.coursID;
+  SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
+
+  IF nbParticipantsActuel + 1 > nbParticipantsMax THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le nombre de participants maximum est atteint';
+  END IF;
+
+  SELECT poidsA INTO poidsCavalier FROM MEMBRE WHERE idM = NEW.idM;
+  SELECT poidsSupportableMax INTO poidsSupportableMax FROM PONEY WHERE poneyID = NEW.poneyID;
+
   IF poidsSupportableMax < poidsCavalier THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le poids du cavalier est supérieur au poids supportable maximum du poney';
   END IF;
