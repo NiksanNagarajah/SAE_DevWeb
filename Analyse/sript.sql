@@ -71,6 +71,7 @@ ALTER TABLE RESERVATION ADD FOREIGN KEY (idM) REFERENCES MEMBRE (idM);
 
 -- Vérification du poids du cavalier par rapport au poids supportable maximum du poney
 -- Et vérification du nombre de participants
+-- Et vérification si l'adhérent a payé sa cotisation avant de pouvoir effectuer une réservation --> Utile ???
 DELIMITER |
 CREATE OR REPLACE TRIGGER poidsInfPoidsMax 
 BEFORE INSERT ON RESERVATION
@@ -80,6 +81,14 @@ BEGIN
   DECLARE poidsSupportableMax DECIMAL(10,2);
   DECLARE nbParticipantsMax INT(4);
   DECLARE nbParticipantsActuel INT(4);
+  -- Utile ???
+  DECLARE cotisationPayee BOOLEAN;
+
+  SELECT payeeCotisation INTO cotisationPayee FROM MEMBRE WHERE idM = NEW.idM;
+  IF cotisationPayee = FALSE THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
+  END IF;
+  --- end Utile ???
 
   SELECT nbParticipantsMax INTO nbParticipantsMax FROM COURS WHERE coursID = NEW.coursID;
   SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
@@ -96,4 +105,5 @@ BEGIN
   END IF;
 END |
 DELIMITER ;
+
 
