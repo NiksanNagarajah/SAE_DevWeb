@@ -1,3 +1,15 @@
+DROP TABLE IF EXISTS RESERVATION;
+DROP TABLE IF EXISTS COURS;
+DROP TABLE IF EXISTS MEMBRE;
+DROP TABLE IF EXISTS TARIF;
+DROP TABLE IF EXISTS PONEY;
+
+CREATE TABLE TARIF (
+  idT INT(4) PRIMARY KEY AUTO_INCREMENT,
+  descriptif VARCHAR(42),
+  montant DECIMAL(10,2)
+);
+
 CREATE TABLE COURS (
   coursID INT(4) PRIMARY KEY AUTO_INCREMENT,
   typeC VARCHAR(42) CHECK (typeC IN ('Collectif', 'particulier')),
@@ -30,7 +42,7 @@ CREATE TABLE PONEY (
   nomP VARCHAR(42),
   age INT(4),
   poidsSupportableMax DECIMAL(10,2),
-  dernierCours DATE, -- DATETIME ???
+  dernierCours DATETIME, 
   disponible BOOLEAN
 );
 
@@ -49,12 +61,6 @@ CREATE TABLE RESERVATION (
 --   coursID INT(4) NOT NULL
 -- );
 
-CREATE TABLE TARIF (
-  PRIMARY KEY (idT),
-  idT INT(4) PRIMARY KEY AUTO_INCREMENT,
-  descriptif VARCHAR(42),
-  montant DECIMAL(10,2)
-);
 
 ALTER TABLE COURS ADD FOREIGN KEY (idM) REFERENCES MEMBRE (idM);
 
@@ -88,7 +94,7 @@ BEGIN
   IF cotisationPayee = FALSE THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
   END IF;
-  --- end Utile ???
+  -- end Utile ???
 
   SELECT nbParticipantsMax INTO nbParticipantsMax FROM COURS WHERE coursID = NEW.coursID;
   SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
