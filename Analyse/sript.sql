@@ -106,4 +106,16 @@ BEGIN
 END |
 DELIMITER ;
 
+-- Vérification de si c'est un cours particulier, alors il ne peut y avoir qu'un seul participant
+DELIMITER |
+CREATE OR REPLACE TRIGGER coursParticulier
+BEFORE INSERT ON COURS
+FOR EACH ROW
+BEGIN 
+  IF NEW.typeC = 'particulier' AND NEW.nbParticipantsMax > 1 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Un cours particulier ne peut avoir qu\'un seul participant';
+  END IF;
+END |
+DELIMITER ;
+
 
