@@ -4,6 +4,13 @@ DROP TABLE IF EXISTS MEMBRE;
 DROP TABLE IF EXISTS TARIF;
 DROP TABLE IF EXISTS PONEY;
 
+DROP TRIGGER IF EXISTS poidsInfPoidsMax;
+DROP TRIGGER IF EXISTS nbParticipantsMaxAtteint;
+DROP TRIGGER IF EXISTS cotisationPayee;
+DROP TRIGGER IF EXISTS coursParticulier;
+DROP TRIGGER IF EXISTS checkReposPoney;
+DROP TRIGGER IF EXISTS checkDispoMoniteur;
+
 CREATE TABLE TARIF (
     idT INT(4) PRIMARY KEY AUTO_INCREMENT,
     descriptif VARCHAR(42),
@@ -23,7 +30,7 @@ CREATE TABLE MEMBRE (
     idT INT(4) NULL,
     cotisationAnnee INT(4) NULL,
     cotisationPayee BOOLEAN DEFAULT FALSE NULL,
-    anneeExperience VARCHAR(42) NULL,
+    anneeExperience INT(2) NULL,
     roleM ENUM('Adhérent', 'Moniteur', 'Administrateur'),
     FOREIGN KEY (idT) REFERENCES TARIF (idT) -- Ajout de la clé étrangère ici
 );
@@ -70,13 +77,29 @@ BEFORE INSERT ON RESERVATION
 FOR EACH ROW
 BEGIN
   DECLARE poidsCavalier DECIMAL(10,2);
-  DECLARE poidsSupportableMax DECIMAL(10,2);
+  DECLARE poidsSupportableMaxPoney DECIMAL(10,2);
 
   SELECT poidsA INTO poidsCavalier FROM MEMBRE WHERE idM = NEW.idM;
-  SELECT poidsSupportableMax INTO poidsSupportableMax FROM PONEY WHERE poneyID = NEW.poneyID;
+  SELECT poidsSupportableMax INTO poidsSupportableMaxPoney FROM PONEY WHERE poneyID = NEW.poneyID;
 
-  IF poidsSupportableMax < poidsCavalier THEN
+  IF poidsSupportableMaxPoney < poidsCavalier THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le poids du cavalier est supérieur au poids supportable maximum du poney';
+  END IF;
+END |
+DELIMITER ;
+
+-- Vérifie si le membre est un moniteur, s'il l'est, il ne peut pas effectuer de réservation
+DELIMITER |
+CREATE OR REPLACE TRIGGER moniteurNePeutPasReserver
+BEFORE INSERT ON RESERVATION
+FOR EACH ROW
+BEGIN
+  DECLARE roleMembre ENUM('Adhérent', 'Moniteur', 'Administrateur');
+
+  SELECT roleM INTO roleMembre FROM MEMBRE WHERE idM = NEW.idM;
+
+  IF roleMembre = 'Moniteur' THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Un moniteur ne peut pas effectuer de réservation';
   END IF;
 END |
 DELIMITER ;
@@ -87,13 +110,13 @@ CREATE OR REPLACE TRIGGER nbParticipantsMaxAtteint
 BEFORE INSERT ON RESERVATION
 FOR EACH ROW
 BEGIN
-  DECLARE nbParticipantsMax INT(4);
+  DECLARE nbParticipantsMaxCours INT(4);
   DECLARE nbParticipantsActuel INT(4);
 
-  SELECT nbParticipantsMax INTO nbParticipantsMax FROM COURS WHERE coursID = NEW.coursID;
+  SELECT nbParticipantsMax INTO nbParticipantsMaxCours FROM COURS WHERE coursID = NEW.coursID;
   SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
 
-  IF nbParticipantsActuel + 1 > nbParticipantsMax THEN
+  IF nbParticipantsActuel + 1 > nbParticipantsMaxCours THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le nombre de participants maximum est atteint';
   END IF;
 END |
@@ -105,11 +128,11 @@ CREATE OR REPLACE TRIGGER cotisationPayee
 BEFORE INSERT ON RESERVATION
 FOR EACH ROW
 BEGIN
-  DECLARE cotisationPayee BOOLEAN;
+  DECLARE cotisationEstPayee BOOLEAN;
 
-  SELECT cotisationPayee INTO cotisationPayee FROM MEMBRE WHERE idM = NEW.idM;
+  SELECT cotisationPayee INTO cotisationEstPayee FROM MEMBRE WHERE idM = NEW.idM;
 
-  IF cotisationPayee = FALSE THEN
+  IF cotisationEstPayee = FALSE THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
   END IF;
 END |
@@ -194,7 +217,9 @@ FOR EACH ROW
 BEGIN
     DECLARE heureFinNouveauCours TIME;
     DECLARE conflit INT;
+    DECLARE messageErreur VARCHAR(255);
 
+    -- Récupérer l'heure de fin du nouveau cours
     SELECT heureF INTO heureFinNouveauCours FROM COURS WHERE coursID = NEW.coursID;
 
     -- Vérifier si le moniteur a un autre cours qui chevauche le nouvel horaire
@@ -203,15 +228,17 @@ BEGIN
     WHERE idM = NEW.idM 
       AND jour = NEW.jour 
       AND (
-            (NEW.heureD BETWEEN heureD AND heureF) OR
-            (heureD BETWEEN NEW.heureD AND heureFinNouveauCours)
+            (NEW.heureD < heureF AND heureD < heureFinNouveauCours) -- Vérifier chevauchement
+            AND NOT (NEW.heureD = heureF OR heureD = heureFinNouveauCours) -- Autoriser les cours consécutifs sans chevauchement
           );
 
-    -- Si un conflit est détecté, bloquer l'insertion avec un message d'erreur
+    -- Si un conflit est détecté, bloquer l'insertion avec un message d'erreur contenant le nombre de conflits
     IF conflit > 0 THEN
+        SET messageErreur = CONCAT('Le moniteur n\'est pas disponible pour cet horaire, il a déjà ', conflit, ' conflit(s) de cours prévu(s).');
         SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Le moniteur n\'est pas disponible pour cet horaire, il a déjà un cours prévu.';
+        SET MESSAGE_TEXT = messageErreur;
     END IF;
 END |
 DELIMITER ;
+
 
