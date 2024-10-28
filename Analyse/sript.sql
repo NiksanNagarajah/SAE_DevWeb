@@ -141,10 +141,7 @@ BEGIN
     DECLARE tempsRepos INT;
     DECLARE totalDuree INT DEFAULT 0;
 
-    -- Récupérer la durée du cours et les horaires du cours à réserver
     SELECT duree, jour, heureD INTO coursDuree, jourCours, heureCours FROM COURS WHERE coursID = NEW.coursID;
-
-    -- Calculer l'heure de fin du cours
     SET finCours = ADDTIME(heureCours, coursDuree * 10000);
 
     -- Vérifier les réservations précédentes pour le même poney
@@ -152,7 +149,7 @@ BEGIN
     FROM RESERVATION R JOIN COURS C ON R.coursID = C.coursID
     WHERE R.poneyID = NEW.poneyID 
       AND C.jour = jourCours 
-      AND C.heureD < heureCours; -- Vérifie que les cours précédents se terminent avant le début du nouveau cours
+      AND C.heureD < heureCours; 
 
     -- Vérifier si le poney a eu des cours précédents
     IF derniereReservation IS NOT NULL THEN
@@ -168,22 +165,18 @@ BEGIN
           WHERE R.poneyID = NEW.poneyID 
             AND C.jour = jourCours 
             AND C.heureD < heureCours 
-            AND C.heureF <= derniereReservation; -- On s'assure qu'on ne dépasse pas la dernière réservation
+            AND C.heureF <= derniereReservation; 
 
-          -- Conditions à vérifier
-          -- Si la somme des durées des cours précédents dépasse 1 heure et que le nouveau cours est de 2 heures
           IF (totalDuree >= 2 AND coursDuree = 2) THEN
               SIGNAL SQLSTATE '45000' 
               SET MESSAGE_TEXT = 'Le poney doit se reposer après avoir eu au moins 2 heures de cours.';
           END IF;
 
-          -- Si la somme des durées des cours précédents est exactement 2 heures et le nouveau cours est de 1 heure
           IF (totalDuree = 2 AND coursDuree = 1) THEN
               SIGNAL SQLSTATE '45000' 
               SET MESSAGE_TEXT = 'Le poney doit se reposer après avoir eu 2 heures de cours.';
           END IF;
 
-          -- Si la somme des durées des cours précédents est 1 heure et le nouveau cours est de 2 heures
           IF (totalDuree = 1 AND coursDuree = 2) THEN
               SIGNAL SQLSTATE '45000' 
               SET MESSAGE_TEXT = 'Le poney doit se reposer après avoir eu 1 heure de cours avant un cours de 2 heures.';
@@ -192,3 +185,33 @@ BEGIN
     END IF;
 END |
 DELIMITER ;
+
+-- Vérifie si le moniteur est disponible avant de pouvoir effectuer une réservation
+DELIMITER |
+CREATE OR REPLACE TRIGGER checkDispoMoniteur
+BEFORE INSERT ON COURS
+FOR EACH ROW
+BEGIN
+    DECLARE heureFinNouveauCours TIME;
+    DECLARE conflit INT;
+
+    SELECT heureF INTO heureFinNouveauCours FROM COURS WHERE coursID = NEW.coursID;
+
+    -- Vérifier si le moniteur a un autre cours qui chevauche le nouvel horaire
+    SELECT COUNT(*) INTO conflit
+    FROM COURS
+    WHERE idM = NEW.idM 
+      AND jour = NEW.jour 
+      AND (
+            (NEW.heureD BETWEEN heureD AND heureF) OR
+            (heureD BETWEEN NEW.heureD AND heureFinNouveauCours)
+          );
+
+    -- Si un conflit est détecté, bloquer l'insertion avec un message d'erreur
+    IF conflit > 0 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Le moniteur n\'est pas disponible pour cet horaire, il a déjà un cours prévu.';
+    END IF;
+END |
+DELIMITER ;
+
