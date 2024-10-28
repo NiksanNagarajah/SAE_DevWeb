@@ -63,9 +63,7 @@ CREATE TABLE RESERVATION (
 
 -- TRIGGER
 
--- Vérification du poids du cavalier par rapport au poids supportable maximum du poney
--- Et vérification du nombre de participants
--- Et vérification si l'adhérent a payé sa cotisation avant de pouvoir effectuer une réservation
+-- Vérifie si le poids du cavalier est inférieur au poids supportable maximum du poney
 DELIMITER |
 CREATE OR REPLACE TRIGGER poidsInfPoidsMax 
 BEFORE INSERT ON RESERVATION
@@ -73,21 +71,6 @@ FOR EACH ROW
 BEGIN
   DECLARE poidsCavalier DECIMAL(10,2);
   DECLARE poidsSupportableMax DECIMAL(10,2);
-  DECLARE nbParticipantsMax INT(4);
-  DECLARE nbParticipantsActuel INT(4);
-  DECLARE cotisationPayee BOOLEAN;
-
-  SELECT cotisationPayee INTO cotisationPayee FROM MEMBRE WHERE idM = NEW.idM;
-  IF cotisationPayee = FALSE THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
-  END IF;
-
-  SELECT nbParticipantsMax INTO nbParticipantsMax FROM COURS WHERE coursID = NEW.coursID;
-  SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
-
-  IF nbParticipantsActuel + 1 > nbParticipantsMax THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le nombre de participants maximum est atteint';
-  END IF;
 
   SELECT poidsA INTO poidsCavalier FROM MEMBRE WHERE idM = NEW.idM;
   SELECT poidsSupportableMax INTO poidsSupportableMax FROM PONEY WHERE poneyID = NEW.poneyID;
@@ -98,7 +81,41 @@ BEGIN
 END |
 DELIMITER ;
 
--- Vérification de si c'est un cours particulier, alors il ne peut y avoir qu'un seul participant
+-- Vérifie si le nombre de participants maximum est atteint
+DELIMITER |
+CREATE OR REPLACE TRIGGER nbParticipantsMaxAtteint
+BEFORE INSERT ON RESERVATION
+FOR EACH ROW
+BEGIN
+  DECLARE nbParticipantsMax INT(4);
+  DECLARE nbParticipantsActuel INT(4);
+
+  SELECT nbParticipantsMax INTO nbParticipantsMax FROM COURS WHERE coursID = NEW.coursID;
+  SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
+
+  IF nbParticipantsActuel + 1 > nbParticipantsMax THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le nombre de participants maximum est atteint';
+  END IF;
+END |
+DELIMITER ;
+
+-- Vérifie si l'adhérent a payé sa cotisation avant de pouvoir effectuer une réservation
+DELIMITER |
+CREATE OR REPLACE TRIGGER cotisationPayee
+BEFORE INSERT ON RESERVATION
+FOR EACH ROW
+BEGIN
+  DECLARE cotisationPayee BOOLEAN;
+
+  SELECT cotisationPayee INTO cotisationPayee FROM MEMBRE WHERE idM = NEW.idM;
+
+  IF cotisationPayee = FALSE THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
+  END IF;
+END |
+DELIMITER ;
+
+-- Vérifie si c'est un cours particulier, si oui, alors il ne peut y avoir qu'un seul participant
 DELIMITER |
 CREATE OR REPLACE TRIGGER coursParticulier
 BEFORE INSERT ON COURS
@@ -110,6 +127,7 @@ BEGIN
 END |
 DELIMITER ;
 
+-- Vérifie si le poney est disponible avant de pouvoir effectuer une réservation
 DELIMITER |
 CREATE OR REPLACE TRIGGER checkReposPoney
 BEFORE INSERT ON RESERVATION
