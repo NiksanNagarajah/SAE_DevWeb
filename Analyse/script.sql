@@ -220,7 +220,7 @@ BEGIN
     DECLARE messageErreur VARCHAR(255);
 
     -- Récupérer l'heure de fin du nouveau cours
-    SELECT heureF INTO heureFinNouveauCours FROM COURS WHERE coursID = NEW.coursID;
+    SET heureFinNouveauCours = ADDTIME(NEW.heureD, NEW.duree * 10000);
 
     -- Vérifier si le moniteur a un autre cours qui chevauche le nouvel horaire
     SELECT COUNT(*) INTO conflit
@@ -234,9 +234,8 @@ BEGIN
 
     -- Si un conflit est détecté, bloquer l'insertion avec un message d'erreur contenant le nombre de conflits
     IF conflit > 0 THEN
-        SET messageErreur = CONCAT('Le moniteur n\'est pas disponible pour cet horaire, il a déjà ', conflit, ' conflit(s) de cours prévu(s).');
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = messageErreur;
+        SET messageErreur = CONCAT('Le moniteur n\'est pas disponible pour cet horaire, il a déjà ', CAST(conflit AS CHAR), ' cours prévu(s).');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = messageErreur;
     END IF;
 END |
 DELIMITER ;
