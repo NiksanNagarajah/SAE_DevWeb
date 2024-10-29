@@ -1,0 +1,40 @@
+{
+  "width": 553,
+  "height": 432,
+  "cx": [
+    [ "PONEY", 87 ],
+    [ "PAYE", 257 ],
+    [ "TARIF", 384 ],
+    [ "RESERVATION", 87 ],
+    [ "ADHERENT", 257 ],
+    [ "MEMBRE_PARENT_#1", 384 ],
+    [ "MEMBRE", 491 ],
+    [ "COURS", 87 ],
+    [ "DONNER", 257 ],
+    [ "MONITEUR", 384 ]
+  ],
+  "cy": [
+    [ "PONEY", 60 ],
+    [ "PAYE", 60 ],
+    [ "TARIF", 60 ],
+    [ "RESERVATION", 203 ],
+    [ "ADHERENT", 203 ],
+    [ "MEMBRE_PARENT_#1", 203 ],
+    [ "MEMBRE", 203 ],
+    [ "COURS", 338 ],
+    [ "DONNER", 338 ],
+    [ "MONITEUR", 338 ]
+  ],
+  "shift": [
+    [ "PAYE,ADHERENT,0", 0 ],
+    [ "PAYE,TARIF,0", 0 ],
+    [ "RESERVATION,ADHERENT,0", 0 ],
+    [ "RESERVATION,PONEY,0", 0 ],
+    [ "RESERVATION,COURS,0", 0 ],
+    [ "DONNER,COURS,0", 0 ],
+    [ "DONNER,MONITEUR,0", 0 ]
+  ],
+  "ratio": [
+    [ "MEMBRE_PARENT_#1 / MEMBRE", 1.0 ]
+  ]
+}
