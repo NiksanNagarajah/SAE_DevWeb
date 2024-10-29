@@ -45,7 +45,7 @@ INSERT INTO PONEY (nomP, age, poidsSupportableMax) VALUES ('Storm', 9, 80.0);
 
 
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (1, 1, 1, TRUE);
--- Echec trigger poidsInfPoidsMax : le poids de l'adhérent dépasse le poids supportable du poney
+-- Echec trigger moniteurNePeutPasReserver : un moniteur ne peut pas réserver un cours
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (4, 2, 1, TRUE);
 -- Echec trigger cotisationPayee : l'adhérent n'a pas payé sa cotisation
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (3, 3, 2, TRUE);

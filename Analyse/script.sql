@@ -32,20 +32,20 @@ CREATE TABLE MEMBRE (
     cotisationPayee BOOLEAN DEFAULT FALSE NULL,
     anneeExperience INT(2) NULL,
     roleM ENUM('Adhérent', 'Moniteur', 'Administrateur'),
-    FOREIGN KEY (idT) REFERENCES TARIF (idT) -- Ajout de la clé étrangère ici
+    FOREIGN KEY (idT) REFERENCES TARIF (idT)
 );
 
 CREATE TABLE COURS (
     coursID INT(4) PRIMARY KEY AUTO_INCREMENT,
     typeC ENUM('Collectif', 'Particulier'), -- Utilisation d'ENUM pour les types
     duree INT(1) CHECK (duree IN (1, 2)), -- Limite à 1 ou 2 heures
-    nbParticipantsMax INT(4) DEFAULT 10 CHECK (nbParticipantsMax <= 10), -- Ajout d'une valeur par défaut
-    jour ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'), -- Utilisation d'ENUM
+    nbParticipantsMax INT(4) DEFAULT 10 CHECK (nbParticipantsMax <= 10), 
+    jour ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'),
     heureD TIME,
     heureF TIME DEFAULT ADDTIME(heureD, duree * 10000), -- Calcul de l'heure de fin
     prix DECIMAL(10,2),
     idM INT(4) NOT NULL,
-    FOREIGN KEY (idM) REFERENCES MEMBRE (idM) -- Ajout de la clé étrangère directement ici
+    FOREIGN KEY (idM) REFERENCES MEMBRE (idM) 
 );
 
 CREATE TABLE PONEY (
@@ -53,8 +53,6 @@ CREATE TABLE PONEY (
     nomP VARCHAR(42),
     age INT(4),
     poidsSupportableMax DECIMAL(10,2)
-    -- dernierCours DATETIME,
-    -- disponible BOOLEAN
 );
 
 CREATE TABLE RESERVATION (
