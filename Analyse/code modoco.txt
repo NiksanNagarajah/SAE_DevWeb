@@ -1,17 +1,14 @@
-PONEY : poneyID[INT], nomP[VARCHAR], age[INT], poidsSupportableMax[DECIMAL(10,2)], dernierCours[DATE], disponible[BOOLEAN]
+PONEY : poneyID[INT(4)], nomP[VARCHAR(42)], age[INT(4)], poidsSupportableMax[DECIMAL(10,2)]
+PAYE, 11 ADHERENT, 0N TARIF : cotisationAnnee[INT], payeeCotisation[BOOLEAN]
+TARIF : idT[INT(4)], descriptif[VARCHAR(42)], montant[DECIMAL(10,2)]
+:
+
 RESERVATION, 0N ADHERENT, 0N PONEY, 0N COURS : coursPayee[BOOLEAN]
 ADHERENT : _poidsA[DECIMAL(10,2)], niveau[VARCHAR]
-DF, 11 ADHERENT, 0N TARIF : cotisationAnnee[INT], payeeCotisation[BOOLEAN]
-TARIF : idT[INT], descriptif[VARCHAR], montant[DECIMAL(10,2)]
-
-COMPOSE, 11 SEANCE, 1N COURS
-COURS : coursID[INT], typeC[VARCHAR], duree[INT], nbParticipantsMax[INT], jour[VARCHAR], heureD[TIME], prix[DECIMAL(10,2)]
 /XT\ MEMBRE <- ADHERENT, MONITEUR
-MEMBRE : idM[INT], nomM[VARCHAR], prenomM[VARCHAR], dateNaissance[DATE], email[VARCHAR], telephone[VARCHAR]
-:
+MEMBRE : idM[INT(4)], nomM[VARCHAR(42)], prenomM[VARCHAR(42)], dateNaissance[DATE], email[VARCHAR(42) UNIQUE], motDePasse[VARCHAR(100)], telephone[VARCHAR(42) ]
 
-SEANCE : _dateSeance[DATE], seancePayee[BOOLEAN]
+COURS : coursID[INT(4)], typeC[ENUM('Collectif', 'Particulier')], duree[INT(1) CHECK (duree IN (1, 2))], nbParticipantsMax[INT(4) DEFAULT 10 CHECK (nbParticipantsMax <= 10)], jour[ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche')], heureD[TIME], heureF[TIME DEFAULT ADDTIME(heureD, duree * 10000)], prix[DECIMAL(10,2)]
 DONNER, 11 COURS, 1N MONITEUR
-MONITEUR : _certificat[VARCHAR]
-:
+MONITEUR : _anneeExperience[INT(2)]
 :
