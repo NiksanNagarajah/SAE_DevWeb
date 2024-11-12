@@ -1,0 +1,108 @@
+/* Style global */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #002b5c;
+    padding: 10px 20px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px;
+    margin-right: 10px;
+}
+
+.logo-container span {
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    position: relative;
+    padding: 5px;
+}
+
+nav a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #6e4bff;
+    transition: width 0.3s;
+    margin-top: 2px;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+.login-btn {
+    background-color: black;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #333;
+}
+
+
+/* Styles généraux */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Logo */
+.logo-container img {
+    height: 50px;
+    margin-right: 20px;
+}
+
+nav a:hover {
+    color: #4db8ff; /* Couleur de survol */
+}
+
+
+
+/* Container principal */
+.container {
+    padding: 20px;
+}
+
+/* Footer */
+footer {
+    background-color: #f2f2f2;
+    padding: 10px 20px;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+}
