@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SAE Grand Galop{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    {% block styles %}{% endblock %}
+</head>
+<body>
+
+    <!-- Header avec navigation -->
+    <header class="header">
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Grand Galop" class="logo">
+            <span>Grand Galop</span>
+        </div>
+        
+        <nav>
+            <a href="#">Accueil</a>
+            <a href="#">Calendrier</a>
+            <a href="#">Club</a>
+            <button class="login-btn">Se Connecter</button>
+        </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Mohamed-Amine Yahyaoui, Niksan Nagarajah, Romain Lima</p>
+        <p>2024-2025 BUT INFORMATIQUE</p>
+    </footer>
+
+</body>
+</html>

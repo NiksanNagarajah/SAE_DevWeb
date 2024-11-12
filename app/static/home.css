@@ -1,0 +1,27 @@
+main {
+    width: 80%;
+    margin: 20px auto;
+}
+
+.content .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+}
+
+.column img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.column p {
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
