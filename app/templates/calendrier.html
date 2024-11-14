@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendrier{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='calendrier.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="calendrier-container">
+    <h1>Emploi du Temps</h1>
+    <div class="emploi-du-temps">
+        <table>
+            <thead>
+                <tr>
+                    <th>Horaires</th>
+                    <th>Lundi</th>
+                    <th>Mardi</th>
+                    <th>Mercredi</th>
+                    <th>Jeudi</th>
+                    <th>Vendredi</th>
+                    <th>Samedi</th>
+                    <th>Dimanche</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horaire in horaires %}
+                <tr>
+                    <td>{{ horaire.strftime('%H:%M') }}</td>
+                    {% for jour in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
+                    <td class="jour">
+                        {% set cours_du_jour = emploi_du_temps[jour] %}
+                        {% for cours_item in cours_du_jour %}
+                            {% if cours_item.heureD == horaire %}
+                            <div class="cours">
+                                <strong>{{ cours_item.typeC }}</strong><br>
+                                <span class="details">Heure: {{ cours_item.heureD.strftime('%H:%M') }} - {{ (cours_item.heureD.hour + cours_item.duree) % 24 }}:{{ '%02d' % (cours_item.heureD.minute + (cours_item.duree % 1) * 60) }}<br>
+                                {{ cours_item.nbParticipantsMax }} participants max<br>
+                                Prix: {{ cours_item.prix }} €</span>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
