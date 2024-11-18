@@ -32,11 +32,11 @@
                         {% set cours_du_jour = emploi_du_temps[jour] %}
                         {% for cours_item in cours_du_jour %}
                             {% if cours_item.heureD == horaire %}
-                            <div class="cours">
-                                <strong>{{ cours_item.typeC }}</strong><br>
-                                <span class="details">Heure: {{ cours_item.heureD.strftime('%H:%M') }} - {{ (cours_item.heureD.hour + cours_item.duree) % 24 }}:{{ '%02d' % (cours_item.heureD.minute + (cours_item.duree % 1) * 60) }}<br>
-                                {{ cours_item.nbParticipantsMax }} participants max<br>
-                                Prix: {{ cours_item.prix }} €</span>
+                            <div class="cours {{ cours_item.typeC|lower }}">
+                                <strong>{{ cours_item.typeC }}</strong>
+                                <span class="details">{{ cours_item.heureD.strftime('%H:%M') }} - {{ cours_item.heureF.strftime('%H:%M') }}<br>
+                                {{ cours_item.nbParticipantsMax }} participants<br>
+                                {{ cours_item.prix }} €</span>
                             </div>
                             {% endif %}
                         {% endfor %}
