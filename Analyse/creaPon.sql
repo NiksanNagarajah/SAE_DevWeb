@@ -25,9 +25,9 @@ CREATE TABLE MEMBRE (
 CREATE TABLE COURS (
     coursID INT(4) PRIMARY KEY AUTO_INCREMENT,
     typeC ENUM('Collectif', 'Particulier'), -- Utilisation d'ENUM pour les types
-    duree INT(1) CHECK (duree IN (1, 2)), -- Limite à 1 ou 2 heures
-    nbParticipantsMax INT(4) DEFAULT 10 CHECK (nbParticipantsMax <= 10), 
-    jour ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'),
+    duree INT(1) CHECK (duree IN (1, 2)), -- Limite à 1 ou 2 heures de cours
+    nbParticipantsMax INT(4) DEFAULT 10 CHECK (nbParticipantsMax <= 10), -- Limite à 10 participants
+    jour ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'), -- Utilisation d'ENUM pour les jours
     heureD TIME,
     heureF TIME DEFAULT ADDTIME(heureD, duree * 10000), -- Calcul de l'heure de fin
     prix DECIMAL(10,2),
@@ -64,9 +64,11 @@ BEGIN
   DECLARE poidsCavalier DECIMAL(10,2);
   DECLARE poidsSupportableMaxPoney DECIMAL(10,2);
 
+  -- On récupère le poids du cavalier et le poids supportable maximum du poney
   SELECT poidsA INTO poidsCavalier FROM MEMBRE WHERE idM = NEW.idM;
   SELECT poidsSupportableMax INTO poidsSupportableMaxPoney FROM PONEY WHERE poneyID = NEW.poneyID;
 
+  -- Si le poids du cavalier est supérieur au poids supportable maximum du poney, on envoie une erreur
   IF poidsSupportableMaxPoney < poidsCavalier THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le poids du cavalier est supérieur au poids supportable maximum du poney';
   END IF;
@@ -81,8 +83,10 @@ FOR EACH ROW
 BEGIN
   DECLARE roleMembre ENUM('Adhérent', 'Moniteur', 'Administrateur');
 
+  -- On récupère le rôle du membre
   SELECT roleM INTO roleMembre FROM MEMBRE WHERE idM = NEW.idM;
 
+  -- Si le membre est un moniteur, on envoie une erreur
   IF roleMembre = 'Moniteur' THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Un moniteur ne peut pas effectuer de réservation';
   END IF;
@@ -98,9 +102,11 @@ BEGIN
   DECLARE nbParticipantsMaxCours INT(4);
   DECLARE nbParticipantsActuel INT(4);
 
+  -- On récupère le nombre de participants maximum et actuel du cours
   SELECT nbParticipantsMax INTO nbParticipantsMaxCours FROM COURS WHERE coursID = NEW.coursID;
   SELECT COUNT(*) INTO nbParticipantsActuel FROM RESERVATION WHERE coursID = NEW.coursID;
 
+  -- Si le nombre de participants actuel + 1 est supérieur au nombre de participants maximum, on envoie une erreur
   IF nbParticipantsActuel + 1 > nbParticipantsMaxCours THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le nombre de participants maximum est atteint';
   END IF;
@@ -115,8 +121,10 @@ FOR EACH ROW
 BEGIN
   DECLARE cotisationEstPayee BOOLEAN;
 
+  -- On récupère si la cotisation a été payée
   SELECT cotisationPayee INTO cotisationEstPayee FROM MEMBRE WHERE idM = NEW.idM;
 
+  -- Si la cotisation n'est pas payée, on envoie une erreur
   IF cotisationEstPayee = FALSE THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
   END IF;
@@ -129,6 +137,7 @@ CREATE OR REPLACE TRIGGER coursParticulier
 BEFORE INSERT ON COURS
 FOR EACH ROW
 BEGIN 
+  -- Si le cours est particulier et que le nombre de participants maximum est supérieur à 1, on envoie une erreur
   IF NEW.typeC = 'Particulier' AND NEW.nbParticipantsMax > 1 THEN
     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Un cours particulier ne peut avoir qu\'un seul participant';
   END IF;
@@ -144,11 +153,12 @@ BEGIN
     DECLARE coursDuree INT(1);
     DECLARE finCours TIME;
     DECLARE derniereReservation TIME;
-    DECLARE jourCours ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche');
+    DECLARE jourCours ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi');
     DECLARE heureCours TIME;
     DECLARE tempsRepos INT;
     DECLARE totalDuree INT DEFAULT 0;
 
+    -- Récupérer la durée, le jour et l'heure de début du cours
     SELECT duree, jour, heureD INTO coursDuree, jourCours, heureCours FROM COURS WHERE coursID = NEW.coursID;
     SET finCours = ADDTIME(heureCours, coursDuree * 10000);
 
@@ -175,6 +185,7 @@ BEGIN
             AND C.heureD < heureCours 
             AND C.heureF <= derniereReservation; 
 
+          -- Vérifier si le poney a eu assez de repos
           IF (totalDuree >= 2 AND coursDuree = 2) THEN
               SIGNAL SQLSTATE '45000' 
               SET MESSAGE_TEXT = 'Le poney doit se reposer après avoir eu au moins 2 heures de cours.';
