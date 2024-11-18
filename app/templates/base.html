@@ -10,7 +10,6 @@
 </head>
 <body>
 
-    <!-- Header avec navigation -->
     <header class="header">
         <div class="logo-container">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Grand Galop" class="logo">
@@ -25,12 +24,10 @@
         </nav>
     </header>
 
-    <!-- Contenu principal -->
     <main class="container">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer>
         <p>Mohamed-Amine Yahyaoui, Niksan Nagarajah, Romain Lima</p>
         <p>2024-2025 BUT INFORMATIQUE</p>
