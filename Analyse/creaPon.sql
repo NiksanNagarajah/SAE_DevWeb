@@ -1,16 +1,3 @@
-DROP TABLE IF EXISTS RESERVATION;
-DROP TABLE IF EXISTS COURS;
-DROP TABLE IF EXISTS MEMBRE;
-DROP TABLE IF EXISTS TARIF;
-DROP TABLE IF EXISTS PONEY;
-
-DROP TRIGGER IF EXISTS poidsInfPoidsMax;
-DROP TRIGGER IF EXISTS nbParticipantsMaxAtteint;
-DROP TRIGGER IF EXISTS cotisationPayee;
-DROP TRIGGER IF EXISTS coursParticulier;
-DROP TRIGGER IF EXISTS checkReposPoney;
-DROP TRIGGER IF EXISTS checkDispoMoniteur;
-
 CREATE TABLE TARIF (
     idT INT(4) PRIMARY KEY AUTO_INCREMENT,
     descriptif VARCHAR(42),
@@ -207,6 +194,53 @@ BEGIN
 END |
 DELIMITER ;
 
+-- Vérifie si le poney est déjà réservé à cet horaire et si le membre est déjà inscrit à un autre cours à cet horaire
+DELIMITER |
+CREATE OR REPLACE TRIGGER checkChevauchementReservation
+BEFORE INSERT ON RESERVATION
+FOR EACH ROW
+BEGIN
+    DECLARE horaireCoursNewDebut TIME;
+    DECLARE horaireCoursNewFin TIME;
+    DECLARE horaireCoursExistantDebut TIME;
+    DECLARE horaireCoursExistantFin TIME;
+    DECLARE poneyConflit INT;
+    DECLARE membreConflit INT;
+    
+    -- Récupérer les horaires du nouveau cours à réserver
+    SELECT heureD, heureF INTO horaireCoursNewDebut, horaireCoursNewFin 
+    FROM COURS WHERE coursID = NEW.coursID;
+    
+    -- Vérifier s'il y a un conflit d'horaire pour le même poney
+    SELECT COUNT(*) INTO poneyConflit
+    FROM RESERVATION R 
+    JOIN COURS C ON R.coursID = C.coursID
+    WHERE R.poneyID = NEW.poneyID
+    AND (
+        (C.heureD < horaireCoursNewFin AND C.heureF > horaireCoursNewDebut)  -- Chevauchement de temps
+    );
+    
+    -- Vérifier s'il y a un conflit d'horaire pour le même membre
+    SELECT COUNT(*) INTO membreConflit
+    FROM RESERVATION R 
+    JOIN COURS C ON R.coursID = C.coursID
+    WHERE R.idM = NEW.idM
+    AND (
+        (C.heureD < horaireCoursNewFin AND C.heureF > horaireCoursNewDebut)  -- Chevauchement de temps
+    );
+
+    -- Si un conflit pour le poney est trouvé, empêcher la réservation
+    IF poneyConflit > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le poney est déjà réservé à cet horaire.';
+    END IF;
+
+    -- Si un conflit pour le membre est trouvé, empêcher la réservation
+    IF membreConflit > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Le membre est déjà inscrit à un autre cours à cet horaire.';
+    END IF;
+END |
+DELIMITER ;
+
 -- Vérifie si le moniteur est disponible avant de pouvoir effectuer une réservation
 DELIMITER |
 CREATE OR REPLACE TRIGGER checkDispoMoniteur
@@ -237,5 +271,6 @@ BEGIN
     END IF;
 END |
 DELIMITER ;
+
 
 

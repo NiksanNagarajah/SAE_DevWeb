@@ -20,6 +20,9 @@ VALUES ('Bernard', 'Paul', '1975-05-15', 'paul.bernard@example.com', 'password12
 INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, anneeExperience, roleM)
 VALUES ('Renard', 'Alice', '1988-11-22', 'alice.renard@example.com', 'password123', '0612345682', 1, 'Administrateur');
 
+INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, anneeExperience, roleM) 
+VALUES ('Lefevre', 'Luc', '1995-02-28', 'luc.test@example.com', 'password000', '0612345683', 2, 'Moniteur');
+
 
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 1, 10, 'Lundi', '09:00:00', 20.00, 4);
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 2, 1, 'Mercredi', '14:00:00', 30.00, 4);
@@ -35,6 +38,7 @@ INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VAL
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Particulier', 1, 10, 'Samedi', '09:00:00', 20.00, 4);
 -- Echec trigger checkDispoMoniteur : le moniteur n'est pas disponible
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 1, 10, 'Mercredi', '15:00:00', 20.00, 4);
+INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 1, 10, 'Lundi', '09:30:00', 20.00, 6);
 
 
 INSERT INTO PONEY (nomP, age, poidsSupportableMax) VALUES ('Spirit', 5, 75.0);
@@ -65,5 +69,8 @@ INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (1, 4, 10, TR
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (2, 5, 10, TRUE);
 -- Echec trigger poidsInfPoidsMax : le poids de l'adhérent dépasse le poids supportable du poney
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (3, 2, 10, TRUE);
-
+-- Echec trigger checkChevauchementReservation : chevauchement de réservation pour le membre 1
+INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (1, 3, 11, TRUE);
+-- Echec trigger checkChevauchementReservation : chevauchement de réservation pour le poney 1
+INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (2, 1, 11, TRUE);
 
