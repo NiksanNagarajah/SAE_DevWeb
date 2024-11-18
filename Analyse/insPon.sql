@@ -69,6 +69,8 @@ INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (1, 4, 10, TR
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (2, 5, 10, TRUE);
 -- Echec trigger poidsInfPoidsMax : le poids de l'adhérent dépasse le poids supportable du poney
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (3, 2, 10, TRUE);
+
+-- Contraintes de chevauchement de réservation
 -- Echec trigger checkChevauchementReservation : chevauchement de réservation pour le membre 1
 INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (1, 3, 11, TRUE);
 -- Echec trigger checkChevauchementReservation : chevauchement de réservation pour le poney 1
