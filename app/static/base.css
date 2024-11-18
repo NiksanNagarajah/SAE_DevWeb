@@ -4,6 +4,12 @@ body, html {
     font-family: Arial, sans-serif;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -60,7 +66,8 @@ nav a {
 }
 
 .container {
-    padding: 20px;
+    /* padding: 20px; */
+    flex: 1;
 }
 
 footer {

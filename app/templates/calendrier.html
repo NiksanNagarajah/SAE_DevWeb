@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Calendrier{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='calendrier.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="calendrier-container">
+    <h1>Emploi du Temps</h1>
+    <div class="emploi-du-temps">
+        <table>
+            <thead>
+                <tr>
+                    <th>Horaires</th>
+                    <th>Lundi</th>
+                    <th>Mardi</th>
+                    <th>Mercredi</th>
+                    <th>Jeudi</th>
+                    <th>Vendredi</th>
+                    <th>Samedi</th>
+                    <th>Dimanche</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horaire in horaires %}
+                <tr>
+                    <td>{{ horaire.strftime('%H:%M') }}</td>
+                    {% for jour in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
+                    <td class="jour">
+                        {% set cours_du_jour = emploi_du_temps[jour] %}
+                        {% for cours_item in cours_du_jour %}
+                            {% if cours_item.heureD == horaire %}
+                            <div class="cours {{ cours_item.typeC|lower }}">
+                                <strong>{{ cours_item.typeC }}</strong>
+                                <span class="details">{{ cours_item.heureD.strftime('%H:%M') }} - {{ cours_item.heureF.strftime('%H:%M') }}<br>
+                                {{ cours_item.nbParticipantsMax }} participants<br>
+                                {{ cours_item.prix }} €</span>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

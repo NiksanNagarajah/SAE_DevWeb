@@ -1,0 +1,83 @@
+.calendrier-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.emploi-du-temps table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.emploi-du-temps th, .emploi-du-temps td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.emploi-du-temps th {
+    background-color: #2d3e50;
+    color: white;
+    font-weight: bold;
+}
+
+.jour {
+    position: relative;
+}
+
+.cours {
+    padding: 8px;
+    border-radius: 4px;
+    margin: 5px 0;
+    color: #fff;
+    font-size: 0.9rem;
+    display: block;
+}
+
+.collectif {
+    background-color: #4caf50; /* Green */
+}
+
+.particulier {
+    background-color: #f44336; /* Red */
+}
+
+.cours .details {
+    display: none;
+    font-size: 0.8rem;
+    color: #333;
+    font-weight: bold;
+}
+
+.cours:hover .details {
+    display: block;
+    background-color: #f1f1f1;
+    color: #333;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .emploi-du-temps table {
+        font-size: 0.9rem;
+    }
+}
