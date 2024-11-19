@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='connexion.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="login-container">
+        <h1>Connexion</h1>  
+
+        <form method="POST" action="{{ url_for('connexion') }}" class="login-form">
+            {{ form.hidden_tag() }}  <!-- Cette ligne est importante pour CSRF protection -->
+            
+            <div class="form-group">
+                <label for="email" class="form-label">{{ form.email.label }}</label>
+                {{ form.email(class="form-input", placeholder="Entrez votre adresse email") }}
+            </div>
+
+            <div class="form-group">
+                <label for="motdepasse" class="form-label">{{ form.motdepasse.label }}</label>
+                {{ form.motdepasse(class="form-input", placeholder="Entrez votre mot de passe") }}
+            </div>
+
+            {% if error %}
+                <div class="error-message">
+                    <strong>Erreur : </strong>{{ error }}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="submit-btn">{{ form.submit.label }}</button> 
+        </form>
+        
+        <p class="signup-link">Vous n'avez pas de compte? <a href="{{ url_for('inscription') }}">Créez-en un ici!</a></p>
+    </div>
+{% endblock %}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SAE Grand Galop{% endblock %}</title>
+    <title>Grand Galop | {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
     {% block styles %}{% endblock %}
 
@@ -20,7 +20,7 @@
             <a href="{{ url_for('home') }}">Accueil</a>
             <a href="{{ url_for('calendrier') }}">Calendrier</a>
             <a href="#">Club</a>
-            <button class="login-btn">Se Connecter</button>
+            <a href="{{ url_for('connexion') }}" class="login-btn">Se Connecter</a>
         </nav>
     </header>
 
