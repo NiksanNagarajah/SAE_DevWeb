@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='inscription.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="signup-container">
+        <h1>Inscription</h1>  
+
+        <form method="POST" action="{{ url_for('inscription') }}" class="signup-form">
+            {{ form.hidden_tag() }} 
+            
+            <div class="form-group">
+                <label for="nomM" class="form-label">{{ form.nomM.label }}</label>
+                {{ form.nomM(class="form-input", placeholder="Entrez votre nom") }}
+            </div>
+
+            <div class="form-group">
+                <label for="prenomM" class="form-label">{{ form.prenomM.label }}</label>
+                {{ form.prenomM(class="form-input", placeholder="Entrez votre prénom") }}
+            </div>
+
+            <div class="form-group">
+                <label for="dateNaissance" class="form-label">{{ form.dateNaissance.label }}</label>
+                {{ form.dateNaissance(class="form-input") }}
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">{{ form.email.label }}</label>
+                {{ form.email(class="form-input", placeholder="Entrez votre adresse email") }}
+            </div>
+
+            <div class="form-group">
+                <label for="motDePasse" class="form-label">{{ form.motDePasse.label }}</label>
+                {{ form.motDePasse(class="form-input", placeholder="Choisissez un mot de passe") }}
+            </div>
+
+            <div class="form-group">
+                <label for="telephone" class="form-label">{{ form.telephone.label }}</label>
+                {{ form.telephone(class="form-input", placeholder="Entrez votre numéro de téléphone") }}
+            </div>
+
+            {% if error %}
+                <div class="error-message">
+                    <strong>Erreur : </strong>{{ error }}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="submit-btn">{{ form.submit.label }}</button> 
+        </form>
+        
+        <p class="login-link">Vous avez déjà un compte? <a href="{{ url_for('connexion') }}">Connectez-vous ici!</a></p>
+    </div>
+{% endblock %}
