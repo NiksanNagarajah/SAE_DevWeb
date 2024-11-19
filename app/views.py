@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, HiddenField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms import StringField, PasswordField, HiddenField, SubmitField, DateField
+from wtforms.validators import DataRequired, Email, Regexp
 from . import app  # ou import app si app est défini dans __init__.py
 from .models import *
 
@@ -9,9 +9,19 @@ from .models import *
 def home():
     return render_template('home.html')
 
+class InscriptionForm(FlaskForm):
+    nomM = StringField('Nom', validators=[DataRequired()])
+    prenomM = StringField('Prénom', validators=[DataRequired()])
+    dateNaissance = DateField('Date de naissance', format='%Y-%m-%d', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    motDePasse = PasswordField('Mot de passe', validators=[DataRequired()])
+    telephone = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?1?\d{9,15}$', message="Le numéro de téléphone est invalide.")])
+    submit = StringField('Inscrire')
+
 @app.route('/inscription')
 def inscription():
-    return render_template('inscription.html')
+    form = InscriptionForm()
+    return render_template('inscription.html', form=form)
 
 class LoginForm(FlaskForm):
     email = StringField("Adresse email", validators=[DataRequired()])

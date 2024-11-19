@@ -11,7 +11,7 @@
         <h1>Connexion</h1>  
 
         <form method="POST" action="{{ url_for('connexion') }}" class="login-form">
-            {{ form.hidden_tag() }}  <!-- Cette ligne est importante pour CSRF protection -->
+            {{ form.hidden_tag() }} 
             
             <div class="form-group">
                 <label for="email" class="form-label">{{ form.email.label }}</label>
