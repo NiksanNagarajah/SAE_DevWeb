@@ -5,26 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grand Galop | {% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
     {% block styles %}{% endblock %}
 
 </head>
 <body>
 
     <header class="header">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Grand Galop" class="logo">
-            <span>Grand Galop</span>
-        </div>
-        
         <nav>
+            <div class="logo-container">
+                <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Grand Galop" class="logo"></a>
+                <a href="{{ url_for('home') }}">Grand Galop</a>
+            </div>
             <a href="{{ url_for('home') }}">Accueil</a>
             <a href="{{ url_for('calendrier') }}">Calendrier</a>
             <a href="#">Club</a>
-            <a href="{{ url_for('connexion') }}" class="login-btn">Se Connecter</a>
         </nav>
+        <a href="{{ url_for('connexion') }}" class="login-btn">Se Connecter</a>
     </header>
 
-    <main class="container">
+    <main>
         {% block content %}{% endblock %}
     </main>
 
