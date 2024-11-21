@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='club.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="presentation">
+    <div class="column">
+        <img src="{{ url_for('static', filename='images/logo.png' )}}" alt="Logo du club">
+    </div>
+    <div class="presentation-content">
+        <h1 class="presentation-title">Grand Galop</h1>
+        <p>Quod cum ita sit, paucae domus studiorum seriis cultibus antea celebratae nunc ludibriis ignaviae torpentis exundanti, vocali sono, perfabili tintinnitu fidium resultantes, denique pro philosophico cantore et in locum oratoris doctor. Artium ludicrarum accultur et bybliothecis sepulcrorum ritus in perpetuum clausis organia fabricantur hydraulicae, et lyrae ad speciem carptorum ingentes tibiaeque et histrionici gestus instrumenta non levia. Quod cum ita sit, paucae domus studiorum seriis cultibus antea celebratae nunc ludibriis ignaviae torpentis exundanti, vocali sono, perfabili tintinnitu fidium resultantes, denique pro philosophico cantore et in locum oratoris doctor.</p>
+    </div>
+
+</section>
+{% endblock %}
