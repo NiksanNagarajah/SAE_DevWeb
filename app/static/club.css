@@ -1,0 +1,62 @@
+.content {
+    margin: 20px auto;
+    max-width: 1400px;
+    padding: 0 20px;
+}
+
+.column {
+    flex: 1;
+    padding: 10px;
+    align-content: center;
+}
+
+.column img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.column p {
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.presentation {
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-start; 
+    height: 85vh; 
+    width: 100%; 
+    position: relative; 
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/Image_du_club.jpg');
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed;
+    padding: 20px; 
+    color: white; 
+    box-sizing: border-box; 
+}
+
+.presentation-content {
+    max-width: 800px; 
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5); 
+    border-radius: 8px; 
+    z-index: 2; 
+}
+
+.presentation-title {
+    font-size: 3rem; 
+    margin-bottom: 20px; 
+}
+
+.presentation p {
+    font-size: 1.2rem; 
+    line-height: 1.6; 
+}
+
+@media (max-width: 650px) {
+    .column {
+        flex: 100%;
+    }
+}

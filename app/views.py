@@ -46,3 +46,7 @@ def connexion():
 def calendrier():
     emploi_du_temps = get_cours()
     return render_template('calendrier.html', emploi_du_temps=emploi_du_temps[0], horaires=emploi_du_temps[1])
+
+@app.route('/club')
+def club():
+    return render_template('club.html')
