@@ -22,7 +22,7 @@ body {
     padding: 0 20px;
 }
 
-header nav > a::after {
+header nav ul a::after {
     content: '';
     position: absolute;
     width: 0;
@@ -33,57 +33,18 @@ header nav > a::after {
     transition: width 0.3s ease-in-out;
 }
 
-header nav > a:hover::after {
+header nav ul a:hover::after {
     width: 100%; 
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    height: 40px;
-    margin-right: 10px;
-}
-
-.logo-container span {
-    color: white;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-nav a {
+/* nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
     position: relative;
     padding: 5px;
-}
+} */
 
-
-.login-btn {
-    background-color: black;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-decoration: none;
-}
-
-
-.logo-container img {
-    height: 50px;
-}
 
 main {
     /* padding: 20px; */
@@ -98,4 +59,49 @@ footer {
     text-align: center;
     color: #333;
     font-size: 14px;
+}
+
+.navbar {
+    background-color: #002a5c; /* Ajustez la couleur pour correspondre au design */
+}
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+.navbar-brand img {
+    height: 40px;
+    margin-right: 10px;
+}
+.navbar-nav .nav-link {
+    color: white;
+    position: relative;
+    font-weight: bold;
+    color: white !important;
+}
+
+/* .btn-login {
+    background-color: black;
+    color: white;
+    border: none;
+} */
+
+.btn-login {
+    /* background-color: black; */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+}
+
+@media (max-width: 450px) {
+    .navbar-expand-custom {
+        display: none;
+    }
+    .navbar-toggler {
+        display: block;
+    }
 }
