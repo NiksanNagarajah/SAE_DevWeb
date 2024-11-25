@@ -56,3 +56,4 @@ def club():
 @app.route('/profil')
 def profil():
     return render_template('profil.html')
+
