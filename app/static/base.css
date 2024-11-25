@@ -53,12 +53,16 @@ main {
 
 footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     background-color: #f2f2f2;
     padding: 10px 20px;
     text-align: center;
     color: #333;
     font-size: 14px;
+}
+
+footer p {
+    all: revert;
 }
 
 .navbar {
@@ -111,3 +115,20 @@ footer {
         display: block;
     }
 } */
+
+
+@media (max-width: 768px) {
+    .collapse.navbar-collapse {
+        position: relative;
+    }
+
+    .btn-login {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .nav-link {
+        width: max-content;
+    }
+}
