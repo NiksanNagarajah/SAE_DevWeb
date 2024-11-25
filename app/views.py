@@ -3,7 +3,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, HiddenField, SubmitField, DateField
 from wtforms.validators import DataRequired, Email, Regexp
 from . import app  # ou import app si app est défini dans __init__.py
+
 from .models import *
+from flask_login import current_user, login_required, login_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from app.models import *
+
 
 @app.route('/')
 def home():
@@ -18,9 +24,21 @@ class InscriptionForm(FlaskForm):
     telephone = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?1?\d{9,15}$', message="Le numéro de téléphone est invalide.")])
     submit = StringField('Inscrire')
 
-@app.route('/inscription')
+@app.route('/inscription',methods=['GET','POST'])
 def inscription():
     form = InscriptionForm()
+    if form.validate_on_submit():
+        existing_user = get_email_membre(form.email.data)
+        if existing_user:
+            #flash("Un utilisateur avec cette adresse email existe déjà")
+            return render_template('inscription.html', error="L'email est déjà pris", form=form)
+        hashed_password = generate_password_hash(form.motDePasse.data)
+        insert_membre(form.nomM.data, form.prenomM.data, form.dateNaissance.data, form.email.data, hashed_password, form.telephone.data)
+        new_user = get_all_user_info(form.email.data)
+        if new_user:
+
+            login_user(new_user)
+        return redirect(url_for('home'))
     return render_template('inscription.html', form=form)
 
 class LoginForm(FlaskForm):
@@ -56,3 +74,27 @@ def club():
 @app.route('/profil')
 def profil():
     return render_template('profil.html')
+
+def cours_reserves(user_id):
+    try:
+        cursor = mysql.connection.cursor()
+        query = """
+            SELECT c.typeC, c.jour, c.heureD, c.heureF, c.prix
+            FROM RESERVATION r
+            JOIN COURS c ON r.coursPayee = c.coursID
+            WHERE r.idM = %s
+        """
+        cursor.execute(query, (user_id,))
+        cours_reserves = cursor.fetchall()
+        cursor.close()
+    except Exception as e:
+        print(f"Erreur lors de la récupération des cours : {e}")
+        cours_reserves = []
+    return cours_reserves
+
+@app.route('/mes_cours')
+def mes_cours():
+    """Affiche les cours réservés par l'utilisateur connecté."""
+    user_id = 2
+    cours = cours_reserves(user_id)
+    return render_template('mesCours.html', cours=cours)

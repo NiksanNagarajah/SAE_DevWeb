@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Cours{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='mesCours.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1>Mes Cours Réservés</h1>
+<div class="cours-container">
+    {% if cours %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Jour</th>
+                    <th>Heure Début</th>
+                    <th>Heure Fin</th>
+                    <th>Prix</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in cours %}
+                <tr>
+                    <td>{{ c[0] }}</td>
+                    <td>{{ c[1] }}</td>
+                    <td>{{ c[2] }}</td>
+                    <td>{{ c[3] }}</td>
+                    <td>{{ c[4] }} €</td>
+                    <td>
+                        <button class="btn-annuler" disabled>Annuler</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucun cours réservé pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}
