@@ -10,19 +10,19 @@ body {
     min-height: 100vh;
 }
 
-.header {
-    display: flex;
+header {
+    /* display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #002b5c;
+    background-color: #002b5c; */
     position: sticky;
     top: 0;
     z-index: 100;
-    height: 70px;
-    padding: 0 20px;
+    /* height: 70px;
+    padding: 0 20px; */
 }
 
-header nav > a::after {
+header nav ul a::after {
     content: '';
     position: absolute;
     width: 0;
@@ -33,42 +33,64 @@ header nav > a::after {
     transition: width 0.3s ease-in-out;
 }
 
-header nav > a:hover::after {
+header nav ul a:hover::after {
     width: 100%; 
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    height: 40px;
-    margin-right: 10px;
-}
-
-.logo-container span {
-    color: white;
-    font-size: 1.2em;
-    font-weight: bold;
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-nav a {
+/* nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
     position: relative;
     padding: 5px;
+} */
+
+
+main {
+    /* padding: 20px; */
+    flex: 1;
 }
 
+footer {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f2f2f2;
+    padding: 10px 20px;
+    text-align: center;
+    color: #333;
+    font-size: 14px;
+}
 
-.login-btn {
+footer p {
+    all: revert;
+}
+
+.navbar {
+    background-color: #002a5c; 
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+.navbar-brand img {
+    height: 40px;
+    margin-right: 10px;
+}
+.navbar-nav .nav-link {
+    color: white;
+    position: relative;
+    font-weight: bold;
+    color: white !important;
+}
+
+/* .btn-login {
+    background-color: black;
+    color: white;
+    border: none;
+} */
+
+.btn-login {
     background-color: black;
     color: white;
     padding: 8px 15px;
@@ -78,24 +100,35 @@ nav a {
     cursor: pointer;
     transition: background-color 0.3s;
     text-decoration: none;
+    white-space: nowrap;
 }
 
-
-.logo-container img {
-    height: 50px;
+.btn-login:hover {
+    background-color: #333;
 }
 
-main {
-    /* padding: 20px; */
-    flex: 1;
-}
+/* @media (max-width: 650px) {
+    .navbar-expand-custom {
+        display: none;
+    }
+    .navbar-toggler {
+        display: block;
+    }
+} */
 
-footer {
-    display: flex;
-    justify-content: space-between;
-    background-color: #f2f2f2;
-    padding: 10px 20px;
-    text-align: center;
-    color: #333;
-    font-size: 14px;
+
+@media (max-width: 768px) {
+    .collapse.navbar-collapse {
+        position: relative;
+    }
+
+    .btn-login {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .nav-link {
+        width: max-content;
+    }
 }
