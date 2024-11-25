@@ -42,6 +42,8 @@ def connexion():
         return redirect(url_for('home'))
     return render_template('connexion.html', form=form)
 
+@app.route('/login')
+
 @app.route('/calendrier')
 def calendrier():
     emploi_du_temps = get_cours()
@@ -50,3 +52,7 @@ def calendrier():
 @app.route('/club')
 def club():
     return render_template('club.html')
+
+@app.route('/profil')
+def profil():
+    return render_template('profil.html')

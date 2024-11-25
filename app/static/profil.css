@@ -1,0 +1,89 @@
+/* Conteneur principal */
+.profile-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre principal */
+.profile-container h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* Tableau des informations */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+table td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+    color: #34495e;
+}
+
+table td:nth-child(1) {
+    font-weight: bold;
+    width: 40%;
+    color: #2c3e50;
+}
+
+table td:nth-child(2) {
+    text-align: right;
+    color: #7f8c8d;
+}
+
+/* Style des boutons */
+.profile-button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.modify-button {
+    padding: 12px 30px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #2980b9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.modify-button:hover {
+    background-color: #3498db;
+    transform: translateY(-2px);
+}
+
+.modify-button:active {
+    background-color: #1c6691;
+    transform: translateY(0);
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 15px;
+    }
+
+    table td {
+        font-size: 0.9em;
+    }
+
+    .modify-button {
+        width: 100%;
+        padding: 10px;
+    }
+}
