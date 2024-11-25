@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='profil.css') }}">
+{% endblock %}
+
+{% block content %}
+<br><br>
+<div class="profile-container">
+    <h1>Profil</h1>
+    <table>
+        <tr>
+            <td>Identifiant</td>
+            <td>id_M</td>
+        </tr>
+        <tr>
+            <td>Nom</td>
+            <td>nom_M</td>
+        </tr>
+        <tr>
+            <td>Prénom</td>
+            <td>prenom_M</td>
+        </tr>
+        <tr>
+            <td>Date de Naissance</td>
+            <td>date_Naissance</td>
+        </tr>
+        <tr>
+            <td>Adresse Mail</td>
+            <td>email</td>
+        </tr>
+        <tr>
+            <td>Téléphone</td>
+            <td>telephone</td>
+        </tr>
+        <tr>
+            <td>Poids</td>
+            <td>poids_A</td>
+        </tr>
+        <tr>
+            <td>Niveau</td>
+            <td>niveau</td>
+        </tr>
+    </table>
+    <div class="profile-button-container">
+        <button class="modify-button">Modifier</button>
+    </div>
+</div>
+{% endblock %}

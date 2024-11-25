@@ -93,7 +93,6 @@ h1 {
     text-decoration: underline;
 }
 
-/* Responsive Design */
 @media (max-width: 480px) {
     .signup-container {
         width: 90%;

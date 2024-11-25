@@ -2,7 +2,9 @@
 
 import datetime
 from .app import *
+
 from flask_login import LoginManager, UserMixin
+
 
 
 
@@ -62,6 +64,7 @@ def get_cours():
         current_time = (datetime.datetime.combine(datetime.date.today(), current_time) + datetime.timedelta(hours=1)).time()
 
     return emploi_du_temps, horaires
+
 
 
 
@@ -135,4 +138,22 @@ def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone):
     cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone) VALUES (%s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone))
     mysql.connection.commit()
     cursor.close()
+
+
+def cours_reserves(user_id):
+    try:
+        cursor = mysql.connection.cursor()
+        query = """
+            SELECT c.typeC, c.jour, c.heureD, c.heureF, c.prix
+            FROM RESERVATION r
+            JOIN COURS c ON r.coursPayee = c.coursID
+            WHERE r.idM = %s
+        """
+        cursor.execute(query, (user_id,))
+        cours_reserves = cursor.fetchall()
+        cursor.close()
+    except Exception as e:
+        print(f"Erreur lors de la récupération des cours : {e}")
+        cours_reserves = []
+    return cours_reserves
 

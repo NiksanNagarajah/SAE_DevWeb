@@ -31,8 +31,14 @@
                             <a class="nav-link" href="{{ url_for('calendrier') }}">Calendrier</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Club</a>
+                            <a class="nav-link" href="{{ url_for('club') }}">Club</a>
                         </li>
+                        <!--<li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('mes_cours') }}">Mes Cours</a>
+                        </li>                 
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('profil') }}">Profil</a>
+                        </li>-->
                     </ul>
 
                     <a href="{{ url_for('connexion') }}" class="btn-login">Se Connecter</a>

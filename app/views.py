@@ -3,9 +3,13 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, HiddenField, SubmitField, DateField
 from wtforms.validators import DataRequired, Email, Regexp
 from . import app  # ou import app si app est défini dans __init__.py
+
 from .models import *
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from app.models import *
+
 
 @app.route('/')
 def home():
@@ -56,6 +60,8 @@ def connexion():
         return redirect(url_for('home'))
     return render_template('connexion.html', form=form)
 
+@app.route('/login')
+
 @app.route('/calendrier')
 def calendrier():
     emploi_du_temps = get_cours()
@@ -64,3 +70,31 @@ def calendrier():
 @app.route('/club')
 def club():
     return render_template('club.html')
+
+@app.route('/profil')
+def profil():
+    return render_template('profil.html')
+
+def cours_reserves(user_id):
+    try:
+        cursor = mysql.connection.cursor()
+        query = """
+            SELECT c.typeC, c.jour, c.heureD, c.heureF, c.prix
+            FROM RESERVATION r
+            JOIN COURS c ON r.coursPayee = c.coursID
+            WHERE r.idM = %s
+        """
+        cursor.execute(query, (user_id,))
+        cours_reserves = cursor.fetchall()
+        cursor.close()
+    except Exception as e:
+        print(f"Erreur lors de la récupération des cours : {e}")
+        cours_reserves = []
+    return cours_reserves
+
+@app.route('/mes_cours')
+def mes_cours():
+    """Affiche les cours réservés par l'utilisateur connecté."""
+    user_id = 2
+    cours = cours_reserves(user_id)
+    return render_template('mesCours.html', cours=cours)
