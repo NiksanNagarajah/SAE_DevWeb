@@ -21,33 +21,6 @@ class Cours():
     def __repr__(self):
         return f"Cours({self.coursID}, {self.typeC}, {self.duree}, {self.nbParticipantsMax}, {self.jour}, {self.heureD}, {self.prix}, {self.idM})"
 
-les_cours = [
-    (1, 'Collectif', 1, 10, 'Lundi', datetime.time(9, 0), datetime.time(10, 0), 20.0, 4),
-    (6, 'Collectif', 1, 5, 'Lundi', datetime.time(10, 0), datetime.time(11, 0), 15.0, 4),
-    (7, 'Collectif', 2, 8, 'Mardi', datetime.time(14, 0), datetime.time(16, 0), 35.0, 4),
-    (2, 'Collectif', 2, 1, 'Mercredi', datetime.time(14, 0), datetime.time(16, 0), 30.0, 4),
-    (8, 'Particulier', 1, 1, 'Mercredi', datetime.time(16, 0), datetime.time(17, 0), 45.0, 4),
-    (9, 'Collectif', 1, 6, 'Jeudi', datetime.time(13, 0), datetime.time(14, 0), 20.0, 4),
-    (3, 'Particulier', 1, 1, 'Vendredi', datetime.time(11, 0), datetime.time(12, 0), 25.0, 4),
-    (10, 'Particulier', 2, 1, 'Vendredi', datetime.time(15, 30), datetime.time(17, 30), 50.0, 4),
-    (5, 'Particulier', 2, 1, 'Samedi', datetime.time(11, 0), datetime.time(13, 0), 40.0, 4),
-    (4, 'Collectif', 1, 10, 'Samedi', datetime.time(10, 0), datetime.time(11, 0), 20.0, 4)
-]
-
-# les_cours = (
-#     (1, 'Collectif', 1, 10, 'Lundi', datetime.timedelta(seconds=32400), datetime.timedelta(seconds=36000), Decimal('20.00'), 4), 
-#     (11, 'Collectif', 1, 10, 'Lundi', datetime.timedelta(seconds=34200), datetime.timedelta(seconds=37800), Decimal('20.00'), 6), 
-#     (6, 'Collectif', 1, 5, 'Lundi', datetime.timedelta(seconds=36000), datetime.timedelta(seconds=39600), Decimal('15.00'), 4), 
-#     (7, 'Collectif', 2, 8, 'Mardi', datetime.timedelta(seconds=50400), datetime.timedelta(seconds=57600), Decimal('35.00'), 4), 
-#     (2, 'Collectif', 2, 1, 'Mercredi', datetime.timedelta(seconds=50400), datetime.timedelta(seconds=57600), Decimal('30.00'), 4), 
-#     (8, 'Particulier', 1, 1, 'Mercredi', datetime.timedelta(seconds=57600), datetime.timedelta(seconds=61200), Decimal('45.00'), 4), 
-#     (9, 'Collectif', 1, 6, 'Jeudi', datetime.timedelta(seconds=46800), datetime.timedelta(seconds=50400), Decimal('20.00'), 4), 
-#     (3, 'Particulier', 1, 1, 'Vendredi', datetime.timedelta(seconds=39600), datetime.timedelta(seconds=43200), Decimal('25.00'), 4), 
-#     (10, 'Particulier', 2, 1, 'Vendredi', datetime.timedelta(seconds=55800), datetime.timedelta(seconds=63000), Decimal('50.00'), 4), 
-#     (4, 'Collectif', 1, 10, 'Samedi', datetime.timedelta(seconds=36000), datetime.timedelta(seconds=39600), Decimal('20.00'), 4), 
-#     (5, 'Particulier', 2, 1, 'Samedi', datetime.timedelta(seconds=39600), datetime.timedelta(seconds=46800), Decimal('40.00'), 4)
-# )
-
 def get_cours():
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
@@ -149,10 +122,9 @@ def get_motdepasse(email):
     return motdepasse[0] if motdepasse else None
 
 
-def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone):
-    
+def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone) VALUES (%s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone))
+    cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT))
     mysql.connection.commit()
     cursor.close()
 
@@ -173,4 +145,30 @@ def cours_reserves(user_id):
         print(f"Erreur lors de la récupération des cours : {e}")
         cours_reserves = []
     return cours_reserves
+
+class Tarif():
+    def __init__(self, idT, description, ageMin, ageMax, prix):
+        self.idT = idT
+        self.description = description
+        self.ageMin = ageMin
+        self.ageMax = ageMax
+        self.prix = prix
+
+    def __repr__(self):
+        return f"Tarif({self.idT}, {self.description}, {self.ageMin}, {self.ageMax}, {self.prix})"
+
+def getIdTarif(dateNaissance):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM TARIF")
+    tarifs = cursor.fetchall()
+    cursor.close()
+
+    lesTarifs = []
+    for tarif in tarifs:
+        lesTarifs.append(Tarif(tarif[0], tarif[1], tarif[2], tarif[3], tarif[4]))        
+    age = datetime.datetime.now().year - dateNaissance.year
+    for tarif in lesTarifs:
+        if tarif.ageMin <= age <= tarif.ageMax:
+            return tarif.idT
+    return 1
 

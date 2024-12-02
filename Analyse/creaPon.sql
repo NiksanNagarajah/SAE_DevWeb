@@ -1,6 +1,8 @@
 CREATE TABLE TARIF (
     idT INT(4) PRIMARY KEY AUTO_INCREMENT,
     descriptif VARCHAR(42),
+    ageMin INT(2),
+    ageMax INT(2),
     montant DECIMAL(10,2)
 );
 
@@ -10,7 +12,7 @@ CREATE TABLE MEMBRE (
     prenomM VARCHAR(42),
     dateNaissance DATE,
     email VARCHAR(42) UNIQUE,
-    motDePasse VARCHAR(100),
+    motDePasse VARCHAR(250),
     telephone VARCHAR(42),
     poidsA DECIMAL(10,2) NULL,
     niveau VARCHAR(42) NULL,
