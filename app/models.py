@@ -65,7 +65,7 @@ def cours_reserves(user_id):
         query = """
             SELECT c.typeC, c.jour, c.heureD, c.heureF, c.prix
             FROM RESERVATION r
-            JOIN COURS c ON r.coursPayee = c.coursID
+            JOIN COURS c ON r.coursID = c.coursID
             WHERE r.idM = %s
         """
         cursor.execute(query, (user_id,))

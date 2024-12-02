@@ -57,26 +57,9 @@ def club():
 def profil():
     return render_template('profil.html')
 
-def cours_reserves(user_id):
-    try:
-        cursor = mysql.connection.cursor()
-        query = """
-            SELECT c.typeC, c.jour, c.heureD, c.heureF, c.prix
-            FROM RESERVATION r
-            JOIN COURS c ON r.coursPayee = c.coursID
-            WHERE r.idM = %s
-        """
-        cursor.execute(query, (user_id,))
-        cours_reserves = cursor.fetchall()
-        cursor.close()
-    except Exception as e:
-        print(f"Erreur lors de la récupération des cours : {e}")
-        cours_reserves = []
-    return cours_reserves
-
 @app.route('/mes_cours')
 def mes_cours():
     """Affiche les cours réservés par l'utilisateur connecté."""
-    user_id = 2
+    user_id = 1
     cours = cours_reserves(user_id)
     return render_template('mesCours.html', cours=cours)
