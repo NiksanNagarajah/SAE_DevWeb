@@ -26,7 +26,7 @@
             <tbody>
                 {% for horaire in horaires %}
                 <tr>
-                    <td>{{ horaire.strftime('%H:%M') }}</td>
+                    <td>{{ horaire }}</td>
                     {% for jour in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
                     <td class="jour">
                         {% set cours_du_jour = emploi_du_temps[jour] %}
@@ -34,7 +34,7 @@
                             {% if cours_item.heureD == horaire %}
                             <div class="cours {{ cours_item.typeC|lower }}">
                                 <strong>{{ cours_item.typeC }}</strong>
-                                <span class="details">{{ cours_item.heureD.strftime('%H:%M') }} - {{ cours_item.heureF.strftime('%H:%M') }}<br>
+                                <span class="details">{{ cours_item.heureD }} - {{ cours_item.heureF }}<br>
                                 {{ cours_item.nbParticipantsMax }} participants<br>
                                 {{ cours_item.prix }} €</span>
                             </div>
