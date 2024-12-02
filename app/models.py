@@ -158,19 +158,85 @@ def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone):
 
 
 def cours_reserves(user_id):
+    """Récupère les cours réservés par un utilisateur spécifique et les retourne sous forme d'objets Cours.
+
+    Args:
+        user_id (int): L'identifiant de l'utilisateur.
+
+    Returns:
+        list[Cours]: Liste des objets Cours correspondant aux réservations de l'utilisateur.
+    """
     try:
         cursor = mysql.connection.cursor()
         query = """
-            SELECT c.typeC, c.jour, c.heureD, c.heureF, c.prix
+            SELECT c.coursID, c.typeC, c.duree, c.nbParticipantsMax, c.jour, 
+                   c.heureD, c.heureF, c.prix, c.idM
             FROM RESERVATION r
             JOIN COURS c ON r.coursID = c.coursID
             WHERE r.idM = %s
         """
         cursor.execute(query, (user_id,))
-        cours_reserves = cursor.fetchall()
+        cours_reserves_raw = cursor.fetchall()
         cursor.close()
+
+        # Convertir les données brutes en objets Cours
+        cours_reserves = [
+            Cours(
+                coursID=c[0],
+                typeC=c[1],
+                duree=c[2],
+                nbParticipantsMax=c[3],
+                jour=c[4],
+                heureD=c[5],
+                heureF=c[6],
+                prix=c[7],
+                idM=c[8]
+            )
+            for c in cours_reserves_raw
+        ]
+
     except Exception as e:
         print(f"Erreur lors de la récupération des cours : {e}")
         cours_reserves = []
+
     return cours_reserves
 
+def profil_utilisateur(user_id):
+    """Récupère les cours réservés par un utilisateur spécifique et les retourne sous forme d'objets Cours.
+
+    Args:
+        user_id (int): L'identifiant de l'utilisateur.
+
+    Returns:
+        list[Cours]: Liste des objets Cours correspondant aux réservations de l'utilisateur.
+    """
+    try:
+        cursor = mysql.connection.cursor()
+        query = """
+            SELECT idM, nomM, prenomM, dateNaissance, email, telephone, poidsA, niveau
+            FROM MEMBRE
+            WHERE idM = %s
+        """
+        cursor.execute(query, (user_id,))
+        profil = cursor.fetchall()
+        cursor.close()
+
+        # Convertir les données brutes en objets Cours
+        profil_ = [
+            Utilisateur(
+                id_membre=profil[0],
+                nom=profil[1],
+                prenom=profil[2],
+                date_naissance=profil[3],
+                email=profil[4],
+                telephone=profil[5],
+                poids=profil[6],
+                niveau=profil[7],
+            )
+        ]
+
+    except Exception as e:
+        print(f"Erreur lors de la récupération des cours : {e}")
+        profil_ = []
+
+    return profil_

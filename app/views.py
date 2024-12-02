@@ -73,7 +73,15 @@ def club():
 
 @app.route('/profil')
 def profil():
-    return render_template('profil.html')
+    """Affiche la page profil de l'utilisateur connecté."""
+    try:
+        user = 1
+        utilisateur = profil_utilisateur(user)
+        return render_template('profil.html', utilisateur=utilisateur)
+    except Exception as e:
+        print(f"Erreur dans la route /profil : {e}")
+        return "Une erreur s'est produite.", 500
+
 
 @app.route('/mes_cours')
 def mes_cours():
