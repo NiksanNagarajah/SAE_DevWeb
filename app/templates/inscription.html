@@ -43,6 +43,16 @@
                 {{ form.telephone(class="form-input", placeholder="Entrez votre numéro de téléphone") }}
             </div>
 
+            <div class="form-group">
+                <label for="poidsA" class="form-label">{{ form.poidsA.label }}</label>
+                {{ form.poidsA(class="form-input", placeholder="Entrez votre poids") }}
+            </div>
+
+            <div class="form-group">
+                <label for="niveau" class="form-label">{{ form.niveau.label }}</label>
+                {{ form.niveau(class="form-input", placeholder="Quels est votre  niveau ?") }}
+            </div>
+
             {% if error %}
                 <div class="error-message">
                     <strong>Erreur : </strong>{{ error }}

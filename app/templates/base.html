@@ -41,7 +41,11 @@
                         </li>-->
                     </ul>
 
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('logout') }}" class="btn-login">Se déconnecter</a>
+                    {% else %}
                     <a href="{{ url_for('connexion') }}" class="btn-login">Se Connecter</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>
