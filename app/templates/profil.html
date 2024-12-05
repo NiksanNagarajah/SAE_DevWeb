@@ -9,43 +9,49 @@
 {% block content %}
 <br><br>
 <div class="profile-container">
-    <h1>Profil</h1>
-    <table>
-        <tr>
-            <td>Identifiant</td>
-            <td>id_M</td>
-        </tr>
-        <tr>
-            <td>Nom</td>
-            <td>nom_M</td>
-        </tr>
-        <tr>
-            <td>Prénom</td>
-            <td>prenom_M</td>
-        </tr>
-        <tr>
-            <td>Date de Naissance</td>
-            <td>date_Naissance</td>
-        </tr>
-        <tr>
-            <td>Adresse Mail</td>
-            <td>email</td>
-        </tr>
-        <tr>
-            <td>Téléphone</td>
-            <td>telephone</td>
-        </tr>
-        <tr>
-            <td>Poids</td>
-            <td>poids_A</td>
-        </tr>
-        <tr>
-            <td>Niveau</td>
-            <td>niveau</td>
-        </tr>
-    </table>
-    <div class="profile-button-container">
-        <button class="modify-button">Modifier</button>
-    </div>
+    {% if utilisateur %}
+        <h1>Profil</h1>
+        <table>
+            {% for u in utilisateur %}
+                <tr>
+                    <td>Identifiant</td>
+                    <td>{{ u.id_membre }}</td>
+                </tr>
+                <tr>
+                    <td>Nom</td>
+                    <td>{{ u.nom }}</td>
+                </tr>
+                <tr>
+                    <td>Prénom</td>
+                    <td>{{ u.prenom }}</td>
+                </tr>
+                <tr>
+                    <td>Date de Naissance</td>
+                    <td>{{ u.date_naissance }}</td>
+                </tr>
+                <tr>
+                    <td>Adresse Mail</td>
+                    <td>{{ u.email }}</td>
+                </tr>
+                <tr>
+                    <td>Téléphone</td>
+                    <td>{{ u.telephone }}</td>
+                </tr>
+                <tr>
+                    <td>Poids</td>
+                    <td>{{ u.poids }} kg</td>
+                </tr>
+                <tr>
+                    <td>Niveau</td>
+                    <td>{{ u.niveau }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="profile-button-container">
+            <button class="modify-button">Modifier</button>
+        </div>
+        {% else %}
+        <p>Aucune information pour le moment.</p>
+    {% endif %}
 </div>
 {% endblock %}
