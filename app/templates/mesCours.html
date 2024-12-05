@@ -24,11 +24,11 @@
             <tbody>
                 {% for c in cours %}
                 <tr>
-                    <td>{{ c[0] }}</td>
-                    <td>{{ c[1] }}</td>
-                    <td>{{ c[2] }}</td>
-                    <td>{{ c[3] }}</td>
-                    <td>{{ c[4] }} €</td>
+                    <td>{{ c.typeC }}</td>
+                    <td>{{ c.jour }}</td>
+                    <td>{{ c.heureD }}</td>
+                    <td>{{ c.heureF }}</td>
+                    <td>{{ c.prix }} €</td>
                     <td>
                         <button class="btn-annuler" disabled>Annuler</button>
                     </td>
