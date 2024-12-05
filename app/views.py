@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, HiddenField, SubmitField, DateField
+from wtforms import FloatField, SelectField, StringField, PasswordField, HiddenField, SubmitField, DateField
 from wtforms.validators import DataRequired, Email, Regexp
 from . import app  # ou import app si app est défini dans __init__.py
 
@@ -22,18 +22,24 @@ class InscriptionForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     motDePasse = PasswordField('Mot de passe', validators=[DataRequired()])
     telephone = StringField('Téléphone', validators=[DataRequired(), Regexp(r'^\+?1?\d{9,15}$', message="Le numéro de téléphone est invalide.")])
+    poidsA = FloatField('Poids actuel', validators=[DataRequired()])
+    niveau = SelectField('Niveau', choices=[('debutant', 'Débutant'), ('intermediaire', 'Intermédiaire'), ('avance', 'Avancé')], validators=[DataRequired()])
     submit = StringField('Inscrire')
 
 @app.route('/inscription',methods=['GET','POST'])
 def inscription():
     form = InscriptionForm()
+    for input in form:
+        print(input)
     if form.validate_on_submit():
         existing_user = get_email_membre(form.email.data)
         if existing_user:
             #flash("Un utilisateur avec cette adresse email existe déjà")
             return render_template('inscription.html', error="L'email est déjà pris", form=form)
         hashed_password = generate_password_hash(form.motDePasse.data)
-        insert_membre(form.nomM.data, form.prenomM.data, form.dateNaissance.data, form.email.data, hashed_password, form.telephone.data)
+        idT = getIdTarif(form.dateNaissance.data)
+        print(idT, "Voici l'id du tarif")
+        insert_membre(form.nomM.data, form.prenomM.data, form.dateNaissance.data, form.email.data, hashed_password, form.telephone.data, form.poidsA.data, form.niveau.data, idT)
         new_user = get_all_user_info(form.email.data)
         if new_user:
 
@@ -47,20 +53,29 @@ class LoginForm(FlaskForm):
     next = HiddenField()
     submit = SubmitField("Se connecter")
 
-@app.route('/connexion')
+@app.route('/connexion', methods=['GET', 'POST'])
 def connexion():
     form = LoginForm()
     if not form.is_submitted():
         form.next.data = request.args.get("next")
     elif form.validate_on_submit():
-        # if mdp incorrect:
-        #     return render_template('connexion.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
-        # next_page = form.next.data or url_for('home')
-        # return redirect(next_page)
+        email = form.email.data
+        motdepasse = form.motdepasse.data
+        user = get_all_user_info(email)
+        if user and check_password_hash(user.mot_de_passe, motdepasse):
+            print("Connexion réussie")
+            login_user(user)
+            print(current_user)
+        else:
+            return render_template('connexion.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
         return redirect(url_for('home'))
     return render_template('connexion.html', form=form)
 
-@app.route('/login')
+@app.route('/deconnexion')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 @app.route('/calendrier')
 def calendrier():

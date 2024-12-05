@@ -1,8 +1,8 @@
-INSERT INTO TARIF (descriptif, montant) VALUES ('Tarif enfant', 20.00);
-INSERT INTO TARIF (descriptif, montant) VALUES ('Tarif adulte', 30.00);
-INSERT INTO TARIF (descriptif, montant) VALUES ('Tarif étudiant', 25.00);
-INSERT INTO TARIF (descriptif, montant) VALUES ('Tarif senior', 22.00);
-INSERT INTO TARIF (descriptif, montant) VALUES ('Tarif membre', 18.00);
+INSERT INTO TARIF (descriptif, ageMin, ageMax, montant) VALUES ('Tarif enfant', 8, 18, 20.00);
+INSERT INTO TARIF (descriptif, ageMin, ageMax, montant) VALUES ('Tarif adulte', 25, 40, 30.00);
+INSERT INTO TARIF (descriptif, ageMin, ageMax, montant) VALUES ('Tarif étudiant', 18, 25, 25.00);
+INSERT INTO TARIF (descriptif, ageMin, ageMax, montant) VALUES ('Tarif senior', 40, 99, 22.00);
+-- INSERT INTO TARIF (descriptif, ageMin, ageMax, montant) VALUES ('Tarif membre', NULL, NULL, 18.00);
 
 
 INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, cotisationAnnee, cotisationPayee, roleM)
