@@ -98,3 +98,36 @@ def mes_cours():
     user_id = current_user.id_membre
     cours = cours_reserves(user_id)
     return render_template('mesCours.html', cours=cours)
+
+
+
+@app.route('/modifier_profil', methods=['POST'])
+def modifier_profil():
+    try:
+        
+        id_membre = request.form.get('id_membre')
+        nom = request.form.get('nom')
+        prenom = request.form.get('prenom')
+        date_naissance = request.form.get('date_naissance')
+        email = request.form.get('email')
+        telephone = request.form.get('telephone')
+        poids = request.form.get('poids')
+        niveau = request.form.get('niveau')
+        
+
+        cursor = mysql.connection.cursor()
+        query = """
+            UPDATE MEMBRE
+            SET nomM = %s, prenomM = %s, dateNaissance = %s, email = %s,
+            telephone = %s, poidsA  = %s,  niveau = %s
+            WHERE idM = %s
+        """
+        cursor.execute(query, (nom, prenom, date_naissance, email, 
+                               telephone, poids, niveau, id_membre))
+        mysql.connection.commit()
+        cursor.close()
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+
+    return redirect(url_for('profil'))

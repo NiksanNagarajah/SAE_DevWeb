@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Profil{% endblock %}
+{% block title %}Modifier le Profil{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='profil.css') }}">
@@ -10,48 +10,87 @@
 <br><br>
 <div class="profile-container">
     {% if utilisateur %}
-        <h1>Profil</h1>
-        <table>
-            {% for u in utilisateur %}
-                <tr>
-                    <td>Identifiant</td>
-                    <td>{{ u.id_membre }}</td>
-                </tr>
+        <h1>Modifier le Profil</h1>
+        <form id="profil-form" method="POST" action="{{ url_for('modifier_profil') }}">
+            <input type="hidden" name="id_membre" value="{{ utilisateur[0].id_membre }}">
+        
+            <table>
                 <tr>
                     <td>Nom</td>
-                    <td>{{ u.nom }}</td>
+                    <td><input type="text" name="nom" value="{{ utilisateur[0].nom }}" readonly></td>
                 </tr>
                 <tr>
                     <td>Prénom</td>
-                    <td>{{ u.prenom }}</td>
+                    <td><input type="text" name="prenom" value="{{ utilisateur[0].prenom }}" readonly></td>
                 </tr>
                 <tr>
                     <td>Date de Naissance</td>
-                    <td>{{ u.date_naissance }}</td>
+                    <td><input type="date" name="date_naissance" value="{{ utilisateur[0].date_naissance }}" readonly></td>
                 </tr>
                 <tr>
                     <td>Adresse Mail</td>
-                    <td>{{ u.email }}</td>
+                    <td><input type="email" name="email" value="{{ utilisateur[0].email }}" readonly></td>
                 </tr>
                 <tr>
                     <td>Téléphone</td>
-                    <td>{{ u.telephone }}</td>
+                    <td><input type="tel" name="telephone" value="{{ utilisateur[0].telephone }}" readonly></td>
                 </tr>
                 <tr>
                     <td>Poids</td>
-                    <td>{{ u.poids }} kg</td>
+                    <td><input type="number" step="0.1" name="poids" value="{{ utilisateur[0].poids }}" readonly></td>
                 </tr>
                 <tr>
                     <td>Niveau</td>
-                    <td>{{ u.niveau }}</td>
+                    <td>
+                        <select name="niveau" disabled>
+                            <option value="Débutant" {% if utilisateur[0].niveau == 'Débutant' %}selected{% endif %}>Débutant</option>
+                            <option value="Intermédiaire" {% if utilisateur[0].niveau == 'Intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                            <option value="Avancé" {% if utilisateur[0].niveau == 'Avancé' %}selected{% endif %}>Avancé</option>
+                        </select>
+                    </td>
                 </tr>
-            {% endfor %}
-        </table>
-        <div class="profile-button-container">
-            <button class="modify-button">Modifier</button>
-        </div>
-        {% else %}
+            </table>
+        
+            <a href="#" id="edit-link" class="edit-link">Modifier</a>
+            <a href="#" id="save-link" class="save-link" style="display: none;">Enregistrer</a>
+            <a href="{{ url_for('profil') }}" id="cancel-link" class="cancel-link" style="display: none;">Annuler</a>
+        </form>
+    {% else %}
         <p>Aucune information pour le moment.</p>
     {% endif %}
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editLink = document.getElementById('edit-link');
+        const saveLink = document.getElementById('save-link');
+        const cancelLink = document.getElementById('cancel-link');
+        const form = document.getElementById('profil-form');
+        const formInputs = document.querySelectorAll('#profil-form input');
+        const select = document.querySelector('#profil-form select');
+
+        editLink.addEventListener('click', function () {
+            formInputs.forEach(input => input.removeAttribute('readonly'));
+            select.removeAttribute('disabled');
+
+            editLink.style.display = 'none';
+            saveLink.style.display = 'inline-block';
+            cancelLink.style.display = 'inline-block';
+        });
+
+        cancelLink.addEventListener('click', function () {
+            formInputs.forEach(input => input.setAttribute('readonly', true));
+            select.setAttribute('disabled', true);
+
+            editLink.style.display = 'inline-block';
+            saveLink.style.display = 'none';
+            cancelLink.style.display = 'none';
+        });
+
+        saveLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            form.submit();
+        });
+    });
+</script>
 {% endblock %}
