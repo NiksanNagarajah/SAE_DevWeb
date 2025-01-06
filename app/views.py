@@ -88,13 +88,13 @@ def club():
 
 @app.route('/profil')
 def profil():
-    user = 2
+    user = current_user.id_membre
     utilisateur = profil_utilisateur(user)
     return render_template('profil.html', utilisateur=utilisateur)
 
 
 @app.route('/mes_cours')
 def mes_cours():
-    user_id = 1
+    user_id = current_user.id_membre
     cours = cours_reserves(user_id)
     return render_template('mesCours.html', cours=cours)
