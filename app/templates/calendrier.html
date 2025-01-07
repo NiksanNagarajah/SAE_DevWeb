@@ -1,51 +1,42 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emploi du Temps</title>
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <style>
+        #calendar {
+            max-width: 900px;
+            margin: 40px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Emploi du Temps</h1>
 
-{% block title %}Calendrier{% endblock %}
+    {{ emploi_du_temps }}
+    <div id="calendar"></div>
 
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='calendrier.css') }}">
-{% endblock %}
-
-{% block content %}
-<section class="calendrier-container">
-    <h1>Emploi du Temps</h1>
-    <div class="emploi-du-temps">
-        <table>
-            <thead>
-                <tr>
-                    <th>Horaires</th>
-                    <th>Lundi</th>
-                    <th>Mardi</th>
-                    <th>Mercredi</th>
-                    <th>Jeudi</th>
-                    <th>Vendredi</th>
-                    <th>Samedi</th>
-                    <th>Dimanche</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for horaire in horaires %}
-                <tr>
-                    <td>{{ horaire }}</td>
-                    {% for jour in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
-                    <td class="jour">
-                        {% set cours_du_jour = emploi_du_temps[jour] %}
-                        {% for cours_item in cours_du_jour %}
-                            {% if cours_item.heureD == horaire %}
-                            <div class="cours {{ cours_item.typeC|lower }}">
-                                <strong>{{ cours_item.typeC }}</strong>
-                                <span class="details">{{ cours_item.heureD }} - {{ cours_item.heureF }}<br>
-                                {{ cours_item.nbParticipantsMax }} participants<br>
-                                {{ cours_item.prix }} €</span>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
-{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek', // Affichage hebdomadaire
+                slotDuration: '00:30:00',   // Tranches de 30 minutes
+                allDaySlot: false,         // Désactiver l'affichage "toute la journée"
+                events: {{ emploi_du_temps|tojson|safe }}, // Injecte les données JSON
+                locale: 'fr',               // Langue française
+                slotMinTime: "07:00:00",    // Début à 9h
+                slotMaxTime: "18:00:00",    // Fin à 18h
+                eventOverlap: true,         // Permet le chevauchement des cours
+                height: "auto",             // Ajuste la hauteur automatique
+                firstDay: 1,                // Début de la semaine le lundi
+            });
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

@@ -30,30 +30,29 @@ def get_cours():
     class_cours = []
     for cours in les_cours:
         class_cours.append(Cours(cours[0], cours[1], cours[2], cours[3], cours[4], cours[5], cours[6], cours[7], cours[8]))
-    
-    jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-    emploi_du_temps = {jour: [] for jour in jours}
-    
+
+    # Convertir les données pour FullCalendar
+    events = []
+    jours_mapping = {
+        'Lundi': '2025-01-06',  # Exemple de mapping
+        'Mardi': '2025-01-07',
+        'Mercredi': '2025-01-08',
+        'Jeudi': '2025-01-09',
+        'Vendredi': '2025-01-10',
+        'Samedi': '2025-01-11',
+        'Dimanche': '2025-01-12',
+    }
+
     for cours_item in class_cours:
-        emploi_du_temps[cours_item.jour].append(cours_item)
-    
-    start_time = datetime.timedelta(hours=9)  # début à 9h00
-    end_time = datetime.timedelta(hours=18)   # fin à 18h00
-    
-    horaires = []
-    current_time = start_time
-    
-    while current_time < end_time:
-        horaires.append(current_time)
-        current_time += datetime.timedelta(hours=1)
+        start_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureD}"
+        end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
+        events.append({
+            "title": f"{cours_item.typeC} - {cours_item.prix}€",
+            "start": start_time,
+            "end": end_time,
+        })
 
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT TIME(heureD) FROM COURS")
-    test = cursor.fetchall()
-    cursor.close()
-    print(test)
-
-    return emploi_du_temps, horaires
+    return events
 
 
 
