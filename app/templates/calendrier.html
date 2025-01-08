@@ -19,21 +19,22 @@
 
     {{ emploi_du_temps }}
     <div id="calendar"></div>
+    {{ emploi_du_temps|tojson|safe }}
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'timeGridWeek', // Affichage hebdomadaire
-                slotDuration: '00:30:00',   // Tranches de 30 minutes
-                allDaySlot: false,         // Désactiver l'affichage "toute la journée"
-                events: {{ emploi_du_temps|tojson|safe }}, // Injecte les données JSON
-                locale: 'fr',               // Langue française
-                slotMinTime: "07:00:00",    // Début à 9h
-                slotMaxTime: "18:00:00",    // Fin à 18h
-                eventOverlap: true,         // Permet le chevauchement des cours
-                height: "auto",             // Ajuste la hauteur automatique
-                firstDay: 1,                // Début de la semaine le lundi
+                initialView: 'timeGridWeek', 
+                slotDuration: '00:30:00', 
+                allDaySlot: false, 
+                events: {{ emploi_du_temps|tojson|safe }}, // Injecte les données en JSON
+                locale: 'fr', 
+                slotMinTime: "08:00:00", 
+                slotMaxTime: "18:00:00", 
+                eventOverlap: true, 
+                height: "auto", 
+                firstDay: 1, 
             });
             calendar.render();
         });

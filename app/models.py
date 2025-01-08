@@ -44,6 +44,10 @@ def get_cours():
     }
 
     for cours_item in class_cours:
+        if len(str(cours_item.heureD)) == 7:
+            cours_item.heureD = "0" + str(cours_item.heureD)
+        if len(str(cours_item.heureF)) == 7:
+            cours_item.heureF = "0" + str(cours_item.heureF)
         start_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureD}"
         end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
         events.append({
