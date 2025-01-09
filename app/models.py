@@ -33,14 +33,17 @@ def get_cours():
 
     # Convertir les données pour FullCalendar
     events = []
+    # Obtenir la date d'aujord'hui
+    today = datetime.datetime.now().date()
+    lundi = today - datetime.timedelta(days=today.weekday())
     jours_mapping = {
-        'Lundi': '2025-01-06',  # Exemple de mapping
-        'Mardi': '2025-01-07',
-        'Mercredi': '2025-01-08',
-        'Jeudi': '2025-01-09',
-        'Vendredi': '2025-01-10',
-        'Samedi': '2025-01-11',
-        'Dimanche': '2025-01-12',
+        'Lundi': lundi, 
+        'Mardi': lundi + datetime.timedelta(days=1),
+        'Mercredi': lundi + datetime.timedelta(days=2),
+        'Jeudi': lundi + datetime.timedelta(days=3),
+        'Vendredi': lundi + datetime.timedelta(days=4),
+        'Samedi': lundi + datetime.timedelta(days=5),
+        'Dimanche': lundi + datetime.timedelta(days=6),
     }
 
     for cours_item in class_cours:
@@ -50,8 +53,9 @@ def get_cours():
             cours_item.heureF = "0" + str(cours_item.heureF)
         start_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureD}"
         end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
+        nom_Moniteur = get_monitor_name(cours_item.idM)
         events.append({
-            "title": f"{cours_item.typeC} - {cours_item.prix}€",
+            "title": f"{cours_item.typeC} - {cours_item.prix}€ - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]}",
             "start": start_time,
             "end": end_time,
         })
@@ -175,6 +179,13 @@ def cours_reserves(user_id):
         cours_reserves = []
 
     return cours_reserves
+
+def get_monitor_name(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nomM, prenomM FROM MEMBRE WHERE idM = %s", (idM,))
+    monitor_name = cursor.fetchone()
+    cursor.close()
+    return monitor_name
 
 
 def profil_utilisateur(user_id):
