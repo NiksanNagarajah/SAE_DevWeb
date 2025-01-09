@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Gérer mes Poneys{% endblock %}
+
+{% block styles %}
+{% endblock %}
+
+{% block content %}
+    <h1>Nos Poneys</h1>
+
+    <!-- Message de succès si un poney a été ajouté -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for category, message in messages %}
+                    <li class="alert alert-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulaire pour ajouter un poney -->
+    <section>
+        <h2>Ajouter un nouveau Poney</h2>
+
+        <form  class="form-horizontal" method="post" action="{{ url_for('nosPoneys') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="nomP" class="col-sm-2 control-label">{{ form.nomP.label }}</label>
+                <div>
+                    {{ form.nomP(size=50, class_="form-control", placeholder="Nom") }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="age" class="col-sm-2 control-label">{{ form.age.label }}</label>
+                <div>
+                    {{ form.age(size=50, class_="form-control", placeholder="Age") }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="poidsSupportableMax" class="col-sm-2 control-label">{{ form.poidsSupportableMax.label }}</label>
+                <div>
+                    {{ form.poidsSupportableMax(size=50, class_="form-control", placeholder="Poids supportable") }}
+                </div>
+            </div>
+            <button class="form-group" type="submit">{{ form.submit.label }}</button> 
+        </form>
+    </section>
+
+    <section>
+        <h2>Liste des Poneys</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Âge</th>
+                    <th>Poids Supportable Max</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for poney in poneys %}
+                <tr>
+                    <td>{{ poney.nomP }}</td>
+                    <td>{{ poney.age }}</td>
+                    <td>{{ poney.poidsSupportableMax }}</td>
+                    <td>
+                        <a href="{{ url_for('modifier_poney', poney_id=poney.poneyID) }}" class="btn btn-warning">Modifier</a>
+                        <a href="{{ url_for('supprimer_poney', poney_id=poney.poneyID) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce poney ?');">Supprimer</a>
+                    </td>                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock %}

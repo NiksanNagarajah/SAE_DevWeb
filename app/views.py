@@ -196,3 +196,50 @@ def annuler_cours(id_cours):
 
     return redirect(url_for('mes_cours'))
 
+class AjoutPoneyForm(FlaskForm):
+    poneyID = HiddenField('ID')
+    nomP = StringField('Nom', validators=[DataRequired()])
+    age = FloatField('Age', validators=[DataRequired(), Regexp(r'^\d{1,2}$', message="L'âge est invalide.")])
+    poidsSupportableMax = FloatField('Taille', validators=[DataRequired(), Regexp(r'^\d{1,3}$', message="Le poids supportable est invalide.")])
+    submit = StringField('Ajouter')
+
+
+@app.route('/nosPoneys', methods=['GET', 'POST'])
+def nosPoneys():
+    form = AjoutPoneyForm()
+    if form.validate_on_submit():
+        try: 
+            ajouterPoney(form.nomP.data, form.age.data, form.poidsSupportableMax.data)
+            flash("Le poney a été ajouté avec succès.", "success")
+            return redirect(url_for('nosPoneys'))
+        except Exception as e:
+            flash("Une erreur est survenue lors de l'ajout du poney.", "error")
+    return render_template('gerer_poneys.html', poneys=getPoneys(), form=form)
+
+@app.route('/modifier_poney/<int:poney_id>', methods=['GET', 'POST'])
+def modifier_poney(poney_id):
+    form = AjoutPoneyForm()
+    poney = getPoney(poney_id)
+    if request.method == 'GET':
+        form.poneyID.data = poney.poneyID
+        form.nomP.data = poney.nomP
+        form.age.data = poney.age
+        form.poidsSupportableMax.data = poney.poidsSupportableMax
+    if form.validate_on_submit():
+        try:
+            modifierPoney(form.poneyID, form.nomP.data, float(form.age.data), flaot(form.poidsSupportableMax.data))
+            flash("Le poney a été modifié avec succès.", "success")
+            return redirect(url_for('nosPoneys'))
+        except Exception as e:
+            flash("Une erreur est survenue lors de la modification du poney.", "error")
+    return render_template('modifier_poney.html', poney=poney, form=form)
+
+
+@app.route('/supprimer_poney/<int:poney_id>', methods=['POST'])
+def supprimer_poney(poney_id):
+    try:
+        supprimerPoney(poney_id)
+        flash("Le poney a été supprimé avec succès.", "success")
+    except Exception as e:
+        flash("Une erreur est survenue lors de la suppression du poney.", "error")
+    return redirect(url_for('nosPoneys'))

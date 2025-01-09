@@ -256,3 +256,51 @@ def getIdTarif(dateNaissance):
             return tarif.idT
     return 1
 
+class Poney():
+    def __init__(self, poneyID, nomP, age, poidsSupportableMax):
+        self.poneyID = poneyID
+        self.nomP = nomP
+        self.age = age
+        self.poidsSupportableMax = poidsSupportableMax
+
+    def __repr__(self):
+        return f"Poney({self.poneyID}, {self.nomP}, {self.age}, {self.poidsSupportableMax})"
+
+def getPoneys():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM PONEY")
+    poneys = cursor.fetchall()
+    cursor.close()
+
+    lesPoneys = []
+    for poney in poneys:
+        lesPoneys.append(Poney(poney[0], poney[1], poney[2], poney[3]))        
+    return lesPoneys
+
+def modifierPoney(nomP, age, poidsSupportableMax, poneyID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE PONEY SET nomP = %s, age = %s, poidsSupportableMax = %s WHERE poneyID = %s", (nom, age, poidsSupportableMax, poneyID))
+    mysql.connection.commit()
+    cursor.close()
+
+def supprimerPoney(poneyID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM PONEY WHERE poneyID = %s", (poneyID,))
+    mysql.connection.commit()
+    cursor.close()
+
+def ajouterPoney(nomP, age, poidsSupportableMax):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO PONEY (nomP, age, poidsSupportableMax) VALUES (%s, %s, %s)", (nomP, age, poidsSupportableMax))
+    mysql.connection.commit()
+    cursor.close()
+
+def getPoney(poney_id):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM PONEY WHERE poneyID = %s", (poney_id,))
+    poney = cursor.fetchone()
+    cursor.close()
+    return Poney(poney[0], poney[1], poney[2], poney[3]) 
+
+
+    
