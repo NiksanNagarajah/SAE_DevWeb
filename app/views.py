@@ -140,3 +140,52 @@ def gestion_cours():
 
 
 
+@app.route('/modifier_profil', methods=['POST'])
+def modifier_profil():
+    try:
+        
+        id_membre = request.form.get('id_membre')
+        nom = request.form.get('nom')
+        prenom = request.form.get('prenom')
+        date_naissance = request.form.get('date_naissance')
+        email = request.form.get('email')
+        telephone = request.form.get('telephone')
+        poids = request.form.get('poids')
+        niveau = request.form.get('niveau')
+        
+
+        cursor = mysql.connection.cursor()
+        query = """
+            UPDATE MEMBRE
+            SET nomM = %s, prenomM = %s, dateNaissance = %s, email = %s,
+            telephone = %s, poidsA  = %s,  niveau = %s
+            WHERE idM = %s
+        """
+        cursor.execute(query, (nom, prenom, date_naissance, email, 
+                               telephone, poids, niveau, id_membre))
+        mysql.connection.commit()
+        cursor.close()
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+
+    return redirect(url_for('profil'))
+
+@app.route('/annuler_cours/<int:id_cours>', methods=['POST'])
+@login_required
+def annuler_cours(id_cours):
+    try:
+        # Suppression du cours de la base de données en fonction de son id
+        cursor = mysql.connection.cursor()
+        query = "DELETE FROM RESERVATION WHERE coursID = %s AND idM = %s"
+        cursor.execute(query, (id_cours, current_user.id_membre))
+        mysql.connection.commit()
+        cursor.close()
+        flash("Le cours a été annulé avec succès.", "success")
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+        flash("Une erreur est survenue lors de l'annulation du cours.", "error")
+
+    return redirect(url_for('mes_cours'))
+
