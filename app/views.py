@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import render_template, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import FloatField, SelectField, StringField, PasswordField, HiddenField, SubmitField, DateField
@@ -10,6 +11,27 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models import *
 
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if  not current_user.is_authenticated:
+            return redirect(url_for('connexion', next=request))
+        if current_user.nom_role != 'Administrateur':
+            return redirect(url_for('not_admin'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+
+def guest(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated:
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/')
 def home():
@@ -27,6 +49,7 @@ class InscriptionForm(FlaskForm):
     submit = StringField('Inscrire')
 
 @app.route('/inscription',methods=['GET','POST'])
+@guest
 def inscription():
     form = InscriptionForm()
     for input in form:
@@ -53,7 +76,10 @@ class LoginForm(FlaskForm):
     next = HiddenField()
     submit = SubmitField("Se connecter")
 
+
+
 @app.route('/connexion', methods=['GET', 'POST'])
+@guest
 def connexion():
     form = LoginForm()
     if not form.is_submitted():
@@ -71,6 +97,8 @@ def connexion():
         return redirect(url_for('home'))
     return render_template('connexion.html', form=form)
 
+
+
 @app.route('/deconnexion')
 @login_required
 def logout():
@@ -87,6 +115,7 @@ def club():
     return render_template('club.html')
 
 @app.route('/profil')
+@login_required
 def profil():
     user = current_user.id_membre
     utilisateur = profil_utilisateur(user)
@@ -94,10 +123,20 @@ def profil():
 
 
 @app.route('/mes_cours')
+@login_required
 def mes_cours():
     user_id = current_user.id_membre
     cours = cours_reserves(user_id)
     return render_template('mesCours.html', cours=cours)
+
+@app.route("/not_admin")
+def not_admin():
+    return render_template("not_admin.html")
+
+@app.route('/gestion_cours')
+@admin_required
+def gestion_cours():
+    return render_template('gestion_cours.html')
 
 
 
@@ -149,3 +188,4 @@ def annuler_cours(id_cours):
         flash("Une erreur est survenue lors de l'annulation du cours.", "error")
 
     return redirect(url_for('mes_cours'))
+

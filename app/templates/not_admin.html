@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Not Admin{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='not_admin.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="not-admin">
+        <h1>Vous n'êtes pas administrateur</h1>
+        <p>Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+        <a class="btn-insert" href="{{ url_for('home') }}">Retour à l'accueil</a>
+    </div>
+{% endblock %}

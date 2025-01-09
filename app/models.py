@@ -80,6 +80,9 @@ class Utilisateur(UserMixin):
         self.role = role
     def get_id(self):
         return str(self.id_membre)
+    
+    def is_admin(self):
+        return self.role == 'Administrateur'
 
 @login_manager.user_loader
 def load_user(idM):
