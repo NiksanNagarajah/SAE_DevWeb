@@ -116,35 +116,35 @@ END |
 DELIMITER ;
 
 -- Vérifie si l'adhérent a payé sa cotisation avant de pouvoir effectuer une réservation
-DELIMITER |
-CREATE OR REPLACE TRIGGER cotisationPayee
-BEFORE INSERT ON RESERVATION
-FOR EACH ROW
-BEGIN
-  DECLARE cotisationEstPayee BOOLEAN;
+-- DELIMITER |
+-- CREATE OR REPLACE TRIGGER cotisationPayee
+-- BEFORE INSERT ON RESERVATION
+-- FOR EACH ROW
+-- BEGIN
+--   DECLARE cotisationEstPayee BOOLEAN;
 
-  -- On récupère si la cotisation a été payée
-  SELECT cotisationPayee INTO cotisationEstPayee FROM MEMBRE WHERE idM = NEW.idM;
+--   -- On récupère si la cotisation a été payée
+--   SELECT cotisationPayee INTO cotisationEstPayee FROM MEMBRE WHERE idM = NEW.idM;
 
-  -- Si la cotisation n'est pas payée, on envoie une erreur
-  IF cotisationEstPayee = FALSE THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
-  END IF;
-END |
-DELIMITER ;
+--   -- Si la cotisation n'est pas payée, on envoie une erreur
+--   IF cotisationEstPayee = FALSE THEN
+--     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'L\'adhérent doit payer sa cotisation avant de pouvoir effectuer une réservation';
+--   END IF;
+-- END |
+-- DELIMITER ;
 
--- Vérifie si c'est un cours particulier, si oui, alors il ne peut y avoir qu'un seul participant
-DELIMITER |
-CREATE OR REPLACE TRIGGER coursParticulier
-BEFORE INSERT ON COURS
-FOR EACH ROW
-BEGIN 
-  -- Si le cours est particulier et que le nombre de participants maximum est supérieur à 1, on envoie une erreur
-  IF NEW.typeC = 'Particulier' AND NEW.nbParticipantsMax > 1 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Un cours particulier ne peut avoir qu\'un seul participant';
-  END IF;
-END |
-DELIMITER ;
+-- -- Vérifie si c'est un cours particulier, si oui, alors il ne peut y avoir qu'un seul participant
+-- DELIMITER |
+-- CREATE OR REPLACE TRIGGER coursParticulier
+-- BEFORE INSERT ON COURS
+-- FOR EACH ROW
+-- BEGIN 
+--   -- Si le cours est particulier et que le nombre de participants maximum est supérieur à 1, on envoie une erreur
+--   IF NEW.typeC = 'Particulier' AND NEW.nbParticipantsMax > 1 THEN
+--     SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Un cours particulier ne peut avoir qu\'un seul participant';
+--   END IF;
+-- END |
+-- DELIMITER ;
 
 -- Vérifie si le poney est disponible avant de pouvoir effectuer une réservation
 DELIMITER |

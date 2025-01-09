@@ -1,51 +1,43 @@
 {% extends 'base.html' %}
 
-{% block title %}Calendrier{% endblock %}
+{% block title %}Planning{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='calendrier.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<style>
+
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="calendrier-container">
-    <h1>Emploi du Temps</h1>
-    <div class="emploi-du-temps">
-        <table>
-            <thead>
-                <tr>
-                    <th>Horaires</th>
-                    <th>Lundi</th>
-                    <th>Mardi</th>
-                    <th>Mercredi</th>
-                    <th>Jeudi</th>
-                    <th>Vendredi</th>
-                    <th>Samedi</th>
-                    <th>Dimanche</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for horaire in horaires %}
-                <tr>
-                    <td>{{ horaire }}</td>
-                    {% for jour in ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'] %}
-                    <td class="jour">
-                        {% set cours_du_jour = emploi_du_temps[jour] %}
-                        {% for cours_item in cours_du_jour %}
-                            {% if cours_item.heureD == horaire %}
-                            <div class="cours {{ cours_item.typeC|lower }}">
-                                <strong>{{ cours_item.typeC }}</strong>
-                                <span class="details">{{ cours_item.heureD }} - {{ cours_item.heureF }}<br>
-                                {{ cours_item.nbParticipantsMax }} participants<br>
-                                {{ cours_item.prix }} €</span>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
+<h1>Planning</h1>
+
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek', 
+            slotDuration: '00:30:00', 
+            allDaySlot: false, 
+            events: {{ emploi_du_temps|tojson|safe }}, // Injecte les données en JSON
+            locale: 'fr', 
+            slotMinTime: "08:00:00", 
+            slotMaxTime: "18:00:00", 
+            eventOverlap: true, 
+            height: "auto", 
+            firstDay: 1, 
+            headerToolbar: { 
+                left: '', 
+                center: '', 
+                right: '', 
+            },
+        });
+        calendar.render();
+    });
+</script>
+
 {% endblock %}

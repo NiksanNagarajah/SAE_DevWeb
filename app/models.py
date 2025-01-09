@@ -30,30 +30,37 @@ def get_cours():
     class_cours = []
     for cours in les_cours:
         class_cours.append(Cours(cours[0], cours[1], cours[2], cours[3], cours[4], cours[5], cours[6], cours[7], cours[8]))
-    
-    jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-    emploi_du_temps = {jour: [] for jour in jours}
-    
+
+    # Convertir les données pour FullCalendar
+    events = []
+    # Obtenir la date d'aujord'hui
+    today = datetime.datetime.now().date()
+    lundi = today - datetime.timedelta(days=today.weekday())
+    jours_mapping = {
+        'Lundi': lundi, 
+        'Mardi': lundi + datetime.timedelta(days=1),
+        'Mercredi': lundi + datetime.timedelta(days=2),
+        'Jeudi': lundi + datetime.timedelta(days=3),
+        'Vendredi': lundi + datetime.timedelta(days=4),
+        'Samedi': lundi + datetime.timedelta(days=5),
+        'Dimanche': lundi + datetime.timedelta(days=6),
+    }
+
     for cours_item in class_cours:
-        emploi_du_temps[cours_item.jour].append(cours_item)
-    
-    start_time = datetime.timedelta(hours=9)  # début à 9h00
-    end_time = datetime.timedelta(hours=18)   # fin à 18h00
-    
-    horaires = []
-    current_time = start_time
-    
-    while current_time < end_time:
-        horaires.append(current_time)
-        current_time += datetime.timedelta(hours=1)
+        if len(str(cours_item.heureD)) == 7:
+            cours_item.heureD = "0" + str(cours_item.heureD)
+        if len(str(cours_item.heureF)) == 7:
+            cours_item.heureF = "0" + str(cours_item.heureF)
+        start_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureD}"
+        end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
+        nom_Moniteur = get_monitor_name(cours_item.idM)
+        events.append({
+            "title": f"{cours_item.typeC} - {cours_item.prix}€ - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]}",
+            "start": start_time,
+            "end": end_time,
+        })
 
-    cursor = mysql.connection.cursor()
-    cursor.execute("SELECT TIME(heureD) FROM COURS")
-    test = cursor.fetchall()
-    cursor.close()
-    print(test)
-
-    return emploi_du_temps, horaires
+    return events
 
 
 
@@ -175,6 +182,13 @@ def cours_reserves(user_id):
         cours_reserves = []
 
     return cours_reserves
+
+def get_monitor_name(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT nomM, prenomM FROM MEMBRE WHERE idM = %s", (idM,))
+    monitor_name = cursor.fetchone()
+    cursor.close()
+    return monitor_name
 
 
 def profil_utilisateur(user_id):

@@ -105,10 +105,17 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+# @app.route('/calendrier')
+# def calendrier():
+    # emploi_du_temps = get_cours()
+    # return render_template('calendrier.html', emploi_du_temps=emploi_du_temps[0], horaires=emploi_du_temps[1])
+
 @app.route('/calendrier')
 def calendrier():
     emploi_du_temps = get_cours()
-    return render_template('calendrier.html', emploi_du_temps=emploi_du_temps[0], horaires=emploi_du_temps[1])
+    print(emploi_du_temps)
+    return render_template('calendrier.html', emploi_du_temps=emploi_du_temps)
+
 
 @app.route('/club')
 def club():
