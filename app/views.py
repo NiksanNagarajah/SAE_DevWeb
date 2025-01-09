@@ -131,3 +131,21 @@ def modifier_profil():
         print(e)
 
     return redirect(url_for('profil'))
+
+@app.route('/annuler_cours/<int:id_cours>', methods=['POST'])
+@login_required
+def annuler_cours(id_cours):
+    try:
+        # Suppression du cours de la base de données en fonction de son id
+        cursor = mysql.connection.cursor()
+        query = "DELETE FROM RESERVATION WHERE coursID = %s AND idM = %s"
+        cursor.execute(query, (id_cours, current_user.id_membre))
+        mysql.connection.commit()
+        cursor.close()
+        flash("Le cours a été annulé avec succès.", "success")
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+        flash("Une erreur est survenue lors de l'annulation du cours.", "error")
+
+    return redirect(url_for('mes_cours'))
