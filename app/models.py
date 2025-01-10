@@ -303,4 +303,41 @@ def getPoney(poney_id):
     return Poney(poney[0], poney[1], poney[2], poney[3]) 
 
 
+class Reservation():
+    def __init__(self, idM, poneyID, coursID, coursPayee=True):
+        self.idM = idM
+        self.poneyID = poneyID
+        self.coursID = coursID
+        self.coursPayee = coursPayee
     
+    def __repr__(self):
+        return f"Reservation({self.idM}, {self.coursID}, {self.coursPayee})"
+
+
+def getPoneyForRerservation(poidsAdherent):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM PONEY WHERE poidsSupportableMax <= %s", (poidsAdherent,))
+    reservations = cursor.fetchall()
+    cursor.close()
+
+    lesPoneys = []
+    for poney in reservations:
+        lesPoneys.append((poney[0], Poney(poney[0], poney[1], poney[2], poney[3])))
+    return lesPoneys
+
+def getCoursForReservation():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS")
+    cours = cursor.fetchall()
+    cursor.close()
+
+    lesCours = []
+    for cour in cours:
+        lesCours.append((cour[0], Cours(cour[0], cour[1], cour[2], cour[3], cour[4], cour[5], cour[6], cour[7], cour[8])))
+    return lesCours
+
+def ajouterReservation(idM, poneyID, coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (%s, %s, %s, true)", (idM, poneyID, coursID))
+    mysql.connection.commit()
+    cursor.close()    

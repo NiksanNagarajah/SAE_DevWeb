@@ -7,16 +7,19 @@
 {% endblock %}
 
 {% block content %}
-<h1>Mes Cours Réservés</h1>
+<h1>Mes Cours</h1>
+
 <div class="cours-container">
+    <!-- Affichage des cours réservés -->
+    <h2>Mes Cours Réservés</h2>
     {% if cours %}
         <table>
             <thead>
                 <tr>
                     <th>Type</th>
                     <th>Jour</th>
-                    <th>Heure Début</th>
-                    <th>Heure Fin</th>
+                    <th>Début</th>
+                    <th>Fin</th>
                     <th>Prix</th>
                     <th>Action</th>
                 </tr>
@@ -41,5 +44,22 @@
     {% else %}
         <p>Aucun cours réservé pour le moment.</p>
     {% endif %}
+</div>
+
+<!-- Formulaire d'ajout de réservation -->
+<div class="reservation-container">
+    <h2>Réserver un cours</h2>
+    <form method="POST" action="{{ url_for('mes_cours') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="poneyID">Poney :</label>
+            {{ form.poneyID(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label for="coursID">Cours :</label>
+            {{ form.coursID(class="form-control") }}
+        </div>
+        <button class="btn-submit" type="submit">{{ form.submit.label }}</button> 
+    </form>
 </div>
 {% endblock %}
