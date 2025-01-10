@@ -17,7 +17,13 @@ app.config['MYSQL_USER'] = 'nagarajah'
 app.config['MYSQL_PASSWORD'] = 'nagarajah'
 app.config['MYSQL_DB'] = 'DBnagarajah'
 
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'test'
+# app.config['MYSQL_PASSWORD'] = 'test'
+# app.config['MYSQL_DB'] = 'PONEY'
+
 mysql=MySQL(app)
 
 # if __name__ == '__main__':
 #     app.run(debug=True)
+

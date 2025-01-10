@@ -1,0 +1,133 @@
+/* CSS de base pour gerer_poneys.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+}
+
+section {
+    margin: 20px;
+}
+
+/* Conteneur principal avec Flexbox */
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+/* Style pour la section de la table */
+section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.table th, 
+.table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.table-striped tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+.table-striped tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Style pour la section du formulaire */
+form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 300px;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
+
+form .form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+form .form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+form .form-group .alert {
+    margin-top: 5px;
+    color: #d9534f;
+    font-size: 0.9em;
+}
+
+form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+/* Positionnement des éléments */
+.table-section {
+    flex: 3;
+}
+
+.form-section {
+    flex: 1;
+}
+
+.form-section h2 {
+    text-align: center;
+}
+
+.container h2 {
+    text-align: center;
+}
+
+
+@media screen and (max-width: 1200px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .form-section {
+        width: 100%;
+    }
+
+    .form-section h2 {
+        text-align: left;
+    }
+}

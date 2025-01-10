@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Gérer mes Poneys{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='gerer_poneys.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h1>Nos Poneys</h1>
+
+    <div class="container">
+        <!-- Section Table -->
+        <section class="table-section">
+            <h2>Liste des Poneys</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Âge</th>
+                        <th>Poids Supportable Max</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for poney in poneys %}
+                    <tr>
+                        <td>{{ poney.nomP }}</td>
+                        <td>{{ poney.age }}</td>
+                        <td>{{ poney.poidsSupportableMax }}</td>
+                        <td>
+                            <a href="{{ url_for('modifier_poney', poney_id=poney.poneyID) }}" class="btn btn-warning">Modifier</a>
+                            <a href="{{ url_for('supprimer_poney', poney_id=poney.poneyID) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce poney ?');">Supprimer</a>
+                        </td>                    
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section Form -->
+        <section class="form-section">
+            <h2>Ajouter un Poney</h2>
+
+            <form class="form-horizontal" method="post" action="{{ url_for('nosPoneys') }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <label for="nomP" class="col-sm-2 control-label">{{ form.nomP.label }}</label>
+                    <div>
+                        {{ form.nomP(size=50, class_="form-control", placeholder="Nom") }}
+                        {% if form.nomP.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.nomP.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="col-sm-2 control-label">{{ form.age.label }}</label>
+                    <div>
+                        {{ form.age(size=50, class_="form-control", placeholder="Age") }}
+                        {% if form.age.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.age.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="poidsSupportableMax" class="col-sm-2 control-label">{{ form.poidsSupportableMax.label }}</label>
+                    <div>
+                        {{ form.poidsSupportableMax(size=50, class_="form-control", placeholder="Poids supportable") }}
+                        {% if form.poidsSupportableMax.errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.poidsSupportableMax.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <button class="form-group" type="submit">{{ form.submit.label }}</button> 
+            </form>
+        </section>
+    </div>
+{% endblock %}
