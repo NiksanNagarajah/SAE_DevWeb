@@ -7,39 +7,62 @@
 {% endblock %}
 
 {% block content %}
-<h1>Mes Cours Réservés</h1>
-<div class="cours-container">
-    {% if cours %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Jour</th>
-                    <th>Heure Début</th>
-                    <th>Heure Fin</th>
-                    <th>Prix</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in cours %}
-                <tr>
-                    <td>{{ c.typeC }}</td>
-                    <td>{{ c.jour }}</td>
-                    <td>{{ c.heureD }}</td>
-                    <td>{{ c.heureF }}</td>
-                    <td>{{ c.prix }} €</td>
-                    <td>
-                        <form action="{{ url_for('annuler_cours', id_cours=c.coursID) }}" method="POST">
-                            <button type="submit">Annuler</button>
-                        </form>                        
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucun cours réservé pour le moment.</p>
+<h1>Mes Cours</h1>
+
+<div class="main-container">
+    <div class="cours-container">
+        <h2>Mes Cours Réservés</h2>
+        {% if cours %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Jour</th>
+                        <th>Début</th>
+                        <th>Fin</th>
+                        <th>Prix</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in cours %}
+                    <tr>
+                        <td>{{ c.typeC }}</td>
+                        <td>{{ c.jour }}</td>
+                        <td>{{ c.heureD }}</td>
+                        <td>{{ c.heureF }}</td>
+                        <td>{{ c.prix }} €</td>
+                        <td>
+                            <form action="{{ url_for('annuler_cours', id_cours=c.coursID) }}" method="POST">
+                                <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir annuler ce cours ?');">Annuler</button>
+                            </form>                        
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Aucun cours réservé pour le moment.</p>
+        {% endif %}
+    </div>
+
+    {% if current_user.is_adherent %}
+    <div class="reservation-container">
+        <h2>Réserver un Cours</h2>
+        <form method="POST" action="{{ url_for('mes_cours') }}">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="poneyID">Poney :</label>
+                {{ form.poneyID(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <label for="coursID">Cours :</label>
+                {{ form.coursID(class="form-control") }}
+            </div>
+            <button class="btn-submit" type="submit">{{ form.submit.label }}</button> 
+        </form>
+    </div>
     {% endif %}
 </div>
+
 {% endblock %}

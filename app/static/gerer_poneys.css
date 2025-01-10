@@ -131,3 +131,9 @@ form button:hover {
         text-align: left;
     }
 }
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

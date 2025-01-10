@@ -19,7 +19,7 @@ class Cours():
         self.idM = idM
 
     def __repr__(self):
-        return f"Cours({self.coursID}, {self.typeC}, {self.duree}, {self.nbParticipantsMax}, {self.jour}, {self.heureD}, {self.prix}, {self.idM})"
+        return f"Cours {self.typeC} le {self.jour} de {self.heureD} à {self.heureF} pour {self.prix}€"
 
 def get_cours():
     cursor = mysql.connection.cursor()
@@ -55,7 +55,7 @@ def get_cours():
         end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
         nom_Moniteur = get_monitor_name(cours_item.idM)
         events.append({
-            "title": f"{cours_item.typeC} - {cours_item.prix}€ - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]}",
+            "title": f"{cours_item.typeC} - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]} - {cours_item.prix}€",
             "start": start_time,
             "end": end_time,
         })
@@ -90,6 +90,12 @@ class Utilisateur(UserMixin):
     
     def is_admin(self):
         return self.role == 'Administrateur'
+    
+    def is_monitor(self):
+        return self.role == 'Moniteur'
+    
+    def is_adherent(self):
+        return self.role == 'Adhérent'
 
 @login_manager.user_loader
 def load_user(idM):
@@ -132,9 +138,9 @@ def get_motdepasse(email):
     return motdepasse[0] if motdepasse else None
 
 
-def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT):
+def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, roleM="Adhérent"):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT))
+    cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, roleM) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, roleM))
     mysql.connection.commit()
     cursor.close()
 
@@ -264,7 +270,7 @@ class Poney():
         self.poidsSupportableMax = poidsSupportableMax
 
     def __repr__(self):
-        return f"Poney({self.poneyID}, {self.nomP}, {self.age}, {self.poidsSupportableMax})"
+        return f"{self.nomP} : {self.age} ans"
 
 def getPoneys():
     cursor = mysql.connection.cursor()
@@ -303,4 +309,41 @@ def getPoney(poney_id):
     return Poney(poney[0], poney[1], poney[2], poney[3]) 
 
 
+class Reservation():
+    def __init__(self, idM, poneyID, coursID, coursPayee=True):
+        self.idM = idM
+        self.poneyID = poneyID
+        self.coursID = coursID
+        self.coursPayee = coursPayee
     
+    def __repr__(self):
+        return f"Reservation({self.idM}, {self.coursID}, {self.coursPayee})"
+
+
+def getPoneyForRerservation(poidsAdherent):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM PONEY WHERE poidsSupportableMax >= %s", (poidsAdherent,))
+    reservations = cursor.fetchall()
+    cursor.close()
+
+    lesPoneys = []
+    for poney in reservations:
+        lesPoneys.append((poney[0], Poney(poney[0], poney[1], poney[2], poney[3])))
+    return lesPoneys
+
+def getCoursForReservation(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS WHERE coursID NOT IN (SELECT coursID FROM RESERVATION WHERE idM=%s) ORDER BY jour, heureD", (idM,))
+    cours = cursor.fetchall()
+    cursor.close()
+
+    lesCours = []
+    for cour in cours:
+        lesCours.append((cour[0], Cours(cour[0], cour[1], cour[2], cour[3], cour[4], cour[5], cour[6], cour[7], cour[8])))
+    return lesCours
+
+def ajouterReservation(idM, poneyID, coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (%s, %s, %s, true)", (idM, poneyID, coursID))
+    mysql.connection.commit()
+    cursor.close()    

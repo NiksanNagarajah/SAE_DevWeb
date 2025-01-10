@@ -128,14 +128,6 @@ def profil():
     utilisateur = profil_utilisateur(user)
     return render_template('profil.html', utilisateur=utilisateur)
 
-
-@app.route('/mes_cours')
-@login_required
-def mes_cours():
-    user_id = current_user.id_membre
-    cours = cours_reserves(user_id)
-    return render_template('mesCours.html', cours=cours)
-
 @app.route("/not_admin")
 def not_admin():
     return render_template("not_admin.html")
@@ -245,4 +237,30 @@ def supprimer_poney(poney_id):
         print(e)
         print("e"*50)
         flash("Une erreur est survenue lors de la suppression du poney.", "error")
-    return redirect(url_for('nosPoneys'))
+    return redirect(url_for('nosPoneys')) 
+
+# class AjoutCoursForm ?????
+
+class AjoutReservationForm(FlaskForm):
+    # poneyID = SelectField('Poney', choices=getPoneyForRerservation(current_user.poids), validators=[DataRequired()])
+    poneyID = SelectField('Poney', choices=[], validators=[DataRequired()])
+    coursID = SelectField('Cours', choices=[], validators=[DataRequired()])
+    submit = StringField('Ajouter')
+
+@app.route('/mes_cours', methods=['GET', 'POST'])
+@login_required
+def mes_cours():
+    form = AjoutReservationForm()
+    user_id = current_user.id_membre
+    form.poneyID.choices = getPoneyForRerservation(current_user.poids)
+    form.coursID.choices = getCoursForReservation(user_id)
+    cours = cours_reserves(user_id)
+    if form.validate_on_submit():
+        try:
+            ajouterReservation(current_user.id_membre, form.poneyID.data, form.coursID.data)
+            flash("La réservation a été ajoutée avec succès.", "success")
+            return redirect(url_for('mes_cours'))
+        except Exception as e:
+            flash(e.args[1], "error")
+    return render_template('mesCours.html', cours=cours, form=form)
+

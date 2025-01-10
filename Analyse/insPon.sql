@@ -25,7 +25,7 @@ VALUES ('Lefevre', 'Luc', '1995-02-28', 'luc.test@example.com', 'password000', '
 
 
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 1, 10, 'Lundi', '09:00:00', 20.00, 4);
-INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 2, 1, 'Mercredi', '14:00:00', 30.00, 4);
+INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 2, 6, 'Mercredi', '14:00:00', 30.00, 4);
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Particulier', 1, 1, 'Vendredi', '11:00:00', 25.00, 4);
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Collectif', 1, 10, 'Samedi', '10:00:00', 20.00, 4);
 INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES ('Particulier', 2, 1, 'Samedi', '11:00:00', 40.00, 4);

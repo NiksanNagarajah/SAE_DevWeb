@@ -3,46 +3,51 @@
 {% block title %}Modifier un Poney{% endblock %}
 
 {% block styles %}
-<!-- Ajoutez ici vos styles personnalisés si nécessaire -->
+<link rel="stylesheet" href="{{ url_for('static', filename='gerer_poneys.css') }}">
 {% endblock %}
 
 {% block content %}
     <h1>Modifier le Poney : {{ poney.nomP }}</h1>
 
-    <!-- Affichage des messages flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <ul class="flash-messages">
-                {% for category, message in messages %}
-                    <li class="alert alert-{{ category }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-
-    <!-- Formulaire de modification du poney -->
     <form method="POST" action="{{ url_for('modifier_poney', poney_id=poney.poneyID) }}">
-        {{ form.hidden_tag() }} <!-- Permet de gérer les tokens CSRF pour la sécurité -->
+        {{ form.hidden_tag() }} 
 
-        <!-- Nom du poney -->
         <div class="form-group">
             <label for="nomP">Nom du Poney</label>
             {{ form.nomP(class="form-control", value=poney.nomP) }}
+            {% if form.nomP.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.nomP.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
-        <!-- Âge du poney -->
         <div class="form-group">
             <label for="age">Âge du Poney</label>
             {{ form.age(class="form-control", value=poney.age) }}
+            {% if form.age.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.age.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
-        <!-- Poids supportable maximum du poney -->
         <div class="form-group">
             <label for="poidsSupportableMax">Poids Max Supportable</label>
             {{ form.poidsSupportableMax(class="form-control", value=poney.poidsSupportableMax) }}
+            {% if form.poidsSupportableMax.errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.poidsSupportableMax.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
-        <!-- Bouton de soumission -->
         <button class="form-group" type="submit">Modifier</button> 
     </form>
 
