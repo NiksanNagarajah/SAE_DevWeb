@@ -19,7 +19,7 @@ class Cours():
         self.idM = idM
 
     def __repr__(self):
-        return f"Cours({self.coursID}, {self.typeC}, {self.duree}, {self.nbParticipantsMax}, {self.jour}, {self.heureD}, {self.prix}, {self.idM})"
+        return f"Cours {self.typeC} le {self.jour} de {self.heureD} à {self.heureF} pour {self.prix}€"
 
 def get_cours():
     cursor = mysql.connection.cursor()
@@ -55,7 +55,7 @@ def get_cours():
         end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
         nom_Moniteur = get_monitor_name(cours_item.idM)
         events.append({
-            "title": f"{cours_item.typeC} - {cours_item.prix}€ - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]}",
+            "title": f"{cours_item.typeC} - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]} - {cours_item.prix}€",
             "start": start_time,
             "end": end_time,
         })
@@ -90,6 +90,12 @@ class Utilisateur(UserMixin):
     
     def is_admin(self):
         return self.role == 'Administrateur'
+    
+    def is_monitor(self):
+        return self.role == 'Moniteur'
+    
+    def is_adherent(self):
+        return self.role == 'Adhérent'
 
 @login_manager.user_loader
 def load_user(idM):
@@ -264,7 +270,7 @@ class Poney():
         self.poidsSupportableMax = poidsSupportableMax
 
     def __repr__(self):
-        return f"Poney({self.poneyID}, {self.nomP}, {self.age}, {self.poidsSupportableMax})"
+        return f"{self.nomP} : {self.age} ans"
 
 def getPoneys():
     cursor = mysql.connection.cursor()
@@ -316,7 +322,7 @@ class Reservation():
 
 def getPoneyForRerservation(poidsAdherent):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM PONEY WHERE poidsSupportableMax <= %s", (poidsAdherent,))
+    cursor.execute("SELECT * FROM PONEY WHERE poidsSupportableMax >= %s", (poidsAdherent,))
     reservations = cursor.fetchall()
     cursor.close()
 
@@ -325,9 +331,9 @@ def getPoneyForRerservation(poidsAdherent):
         lesPoneys.append((poney[0], Poney(poney[0], poney[1], poney[2], poney[3])))
     return lesPoneys
 
-def getCoursForReservation():
+def getCoursForReservation(idM):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM COURS")
+    cursor.execute("SELECT * FROM COURS WHERE coursID NOT IN (SELECT coursID FROM RESERVATION WHERE idM=%s) ORDER BY jour, heureD", (idM,))
     cours = cursor.fetchall()
     cursor.close()
 

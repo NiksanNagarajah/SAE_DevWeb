@@ -46,7 +46,8 @@
     {% endif %}
 </div>
 
-<!-- Formulaire d'ajout de réservation -->
+{% if current_user.is_adherent %}
+
 <div class="reservation-container">
     <h2>Réserver un cours</h2>
     <form method="POST" action="{{ url_for('mes_cours') }}">
@@ -62,4 +63,7 @@
         <button class="btn-submit" type="submit">{{ form.submit.label }}</button> 
     </form>
 </div>
+
+{% endif %}
+
 {% endblock %}

@@ -251,9 +251,9 @@ class AjoutReservationForm(FlaskForm):
 @login_required
 def mes_cours():
     form = AjoutReservationForm()
-    form.poneyID.choices = getPoneyForRerservation(current_user.poids)
-    form.coursID.choices = getCoursForReservation()
     user_id = current_user.id_membre
+    form.poneyID.choices = getPoneyForRerservation(current_user.poids)
+    form.coursID.choices = getCoursForReservation(user_id)
     cours = cours_reserves(user_id)
     if form.validate_on_submit():
         try:
@@ -261,6 +261,6 @@ def mes_cours():
             flash("La réservation a été ajoutée avec succès.", "success")
             return redirect(url_for('mes_cours'))
         except Exception as e:
-            flash("Une erreur est survenue lors de l'ajout de la réservation.", "error")
+            flash(e.args[1], "error")
     return render_template('mesCours.html', cours=cours, form=form)
 
