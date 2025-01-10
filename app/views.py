@@ -246,3 +246,26 @@ def supprimer_poney(poney_id):
         print("e"*50)
         flash("Une erreur est survenue lors de la suppression du poney.", "error")
     return redirect(url_for('nosPoneys'))
+
+# class AjoutCoursForm ?????
+
+class AjoutReservationForm(FlaskForm):
+    poneyID = SelectField('Poney', choices=getPoneyForRerservation(), validators=[DataRequired()])
+    coursID = SelectField('Cours', choices=getCoursForReservation(), validators=[DataRequired()])
+    submit = StringField('Ajouter')
+
+@app.route('/reserver_cours', methods=['GET', 'POST'])
+@login_required
+def reserver_cours():
+    form = AjoutReservationForm()
+    if form.validate_on_submit():
+        try:
+            ajouterReservation(current_user.id_membre, form.poneyID.data, form.coursID.data)
+            flash("La réservation a été ajoutée avec succès.", "success")
+            return redirect(url_for('mes_cours'))
+        except Exception as e:
+            flash("Une erreur est survenue lors de l'ajout de la réservation.", "error")
+    return render_template('reserver_cours.html', form=form)
+
+
+
