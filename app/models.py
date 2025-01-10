@@ -132,9 +132,9 @@ def get_motdepasse(email):
     return motdepasse[0] if motdepasse else None
 
 
-def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT):
+def insert_membre(nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, roleM="Adhérent"):
     cursor = mysql.connection.cursor()
-    cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT))
+    cursor.execute("INSERT INTO MEMBRE (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, roleM) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (nomM, prenomM, dateNaissance, email, motDePasse, telephone, poidsA, niveau, idT, roleM))
     mysql.connection.commit()
     cursor.close()
 
