@@ -199,8 +199,8 @@ def annuler_cours(id_cours):
 class AjoutPoneyForm(FlaskForm):
     poneyID = HiddenField('ID')
     nomP = StringField('Nom', validators=[DataRequired()])
-    age = FloatField('Age', validators=[DataRequired(), Regexp(r'^\d{1,2}$', message="L'âge est invalide.")])
-    poidsSupportableMax = FloatField('Taille', validators=[DataRequired(), Regexp(r'^\d{1,3}$', message="Le poids supportable est invalide.")])
+    age = FloatField('Age', validators=[DataRequired()])
+    poidsSupportableMax = FloatField('Taille', validators=[DataRequired()])
     submit = StringField('Ajouter')
 
 
@@ -209,7 +209,7 @@ def nosPoneys():
     form = AjoutPoneyForm()
     if form.validate_on_submit():
         try: 
-            ajouterPoney(form.nomP.data, form.age.data, form.poidsSupportableMax.data)
+            ajouterPoney(form.nomP.data, str(form.age.data), str(form.poidsSupportableMax.data))
             flash("Le poney a été ajouté avec succès.", "success")
             return redirect(url_for('nosPoneys'))
         except Exception as e:
@@ -227,7 +227,7 @@ def modifier_poney(poney_id):
         form.poidsSupportableMax.data = poney.poidsSupportableMax
     if form.validate_on_submit():
         try:
-            modifierPoney(form.poneyID, form.nomP.data, float(form.age.data), flaot(form.poidsSupportableMax.data))
+            modifierPoney(form.nomP.data, form.age.data, form.poidsSupportableMax.data, form.poneyID.data)
             flash("Le poney a été modifié avec succès.", "success")
             return redirect(url_for('nosPoneys'))
         except Exception as e:
@@ -235,11 +235,14 @@ def modifier_poney(poney_id):
     return render_template('modifier_poney.html', poney=poney, form=form)
 
 
-@app.route('/supprimer_poney/<int:poney_id>', methods=['POST'])
+@app.route('/supprimer_poney/<int:poney_id>', methods=['GET', 'POST'])
 def supprimer_poney(poney_id):
     try:
+        print("i"*50)
         supprimerPoney(poney_id)
         flash("Le poney a été supprimé avec succès.", "success")
     except Exception as e:
+        print(e)
+        print("e"*50)
         flash("Une erreur est survenue lors de la suppression du poney.", "error")
     return redirect(url_for('nosPoneys'))

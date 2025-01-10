@@ -279,7 +279,7 @@ def getPoneys():
 
 def modifierPoney(nomP, age, poidsSupportableMax, poneyID):
     cursor = mysql.connection.cursor()
-    cursor.execute("UPDATE PONEY SET nomP = %s, age = %s, poidsSupportableMax = %s WHERE poneyID = %s", (nom, age, poidsSupportableMax, poneyID))
+    cursor.execute("UPDATE PONEY SET nomP = %s, age = %s, poidsSupportableMax = %s WHERE poneyID = %s", (nomP, age, poidsSupportableMax, poneyID))
     mysql.connection.commit()
     cursor.close()
 
