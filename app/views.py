@@ -18,7 +18,7 @@ def admin_required(f):
     def decorated_function(*args, **kwargs):
         if  not current_user.is_authenticated:
             return redirect(url_for('connexion', next=request))
-        if current_user.nom_role != 'Administrateur':
+        if not current_user.is_admin():
             return redirect(url_for('not_admin'))
         return f(*args, **kwargs)
     return decorated_function
@@ -263,4 +263,40 @@ def mes_cours():
         except Exception as e:
             flash(e.args[1], "error")
     return render_template('mesCours.html', cours=cours, form=form)
+
+@app.route('/gestion_membres')
+@admin_required
+def gestion_membres():
+    return render_template('gestion_membres.html', adherents=get_membres('Adhérent', current_user.id_membre), moniteurs=get_membres('Moniteur', current_user.id_membre), admins=get_membres('Administrateur', current_user.id_membre))
+
+@app.route('/changer_role_moniteur/<int:id_membre>', methods=['POST'])
+@admin_required
+def passerMoniteur(id_membre):
+    try:
+        changerRole(id_membre, 'Moniteur')
+        flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
+    except Exception as e:
+        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
+    return redirect(url_for('gestion_membres'))
+
+@app.route('/changer_role_admin/<int:id_membre>', methods=['POST'])
+@admin_required
+def passerAdmin(id_membre):
+    try:
+        changerRole(id_membre, 'Administrateur')
+        flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
+    except Exception as e:
+        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
+    return redirect(url_for('gestion_membres'))
+
+@app.route('/changer_role_adherent/<int:id_membre>', methods=['POST'])
+@admin_required
+def passerAdherent(id_membre):
+    try:
+        changerRole(id_membre, 'Adhérent')
+        flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
+    except Exception as e:
+        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
+    return redirect(url_for('gestion_membres'))
+
 

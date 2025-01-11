@@ -45,7 +45,12 @@
                             {% endif %}   
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('nosPoneys') }}">Nos Poneys</a>
-                            </li> 
+                            </li>
+                            {% if current_user.is_admin() %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('gestion_membres') }}">Nos Membres</a>
+                                </li>
+                            {% endif %}   
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('profil') }}">Profil</a>
                             </li>
