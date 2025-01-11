@@ -379,3 +379,34 @@ def supprimerCoursDuMembre(idM):
     cursor.execute("DELETE FROM COURS WHERE idM = %s", (idM,))
     mysql.connection.commit()
     cursor.close()
+
+def getCoursSimple():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS")
+    cours = cursor.fetchall()
+    cursor.close()
+
+    lesCours = []
+    for cour in cours:
+        lesCours.append(Cours(cour[0], cour[1], cour[2], cour[3], cour[4], cour[5], cour[6], cour[7], cour[8]))
+    return lesCours
+
+def ajouterCours(typeC, duree, nbParticipantsMax, jour, heureD, prix, idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES (%s, %s, %s, %s, %s, %s, %s)", (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM))
+    mysql.connection.commit()
+    cursor.close()
+
+def supprimerCours(coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM COURS WHERE coursID = %s", (coursID,))
+    mysql.connection.commit()
+    cursor.close()
+
+# Modifier Cours ???
+
+# def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, prix, coursID):
+#     cursor = mysql.connection.cursor()
+#     cursor.execute("UPDATE COURS SET typeC = %s, duree = %s, nbParticipantsMax = %s, jour = %s, heureD = %s, prix = %s WHERE coursID = %s", (typeC, duree, nbParticipantsMax, jour, heureD, prix, coursID))
+#     mysql.connection.commit()
+#     cursor.close()

@@ -56,17 +56,22 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('club') }}">Club</a>
                         </li>
-                        {% if current_user.is_authenticated %}
+                    </ul>
+                    {% if current_user.is_authenticated %}
+                        <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('profil') }}">Profil</a>
                             </li>
-                        {% endif %}
-                    </ul>
-
-                    {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('logout') }}" class="btn-login">Se déconnecter</a>
+                            <li class="nav-item">
+                                <a href="{{ url_for('logout') }}" class="btn-login">Se déconnecter</a>
+                            </li>
+                        </ul>
                     {% else %}
-                    <a href="{{ url_for('connexion') }}" class="btn-login">Se Connecter</a>
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a href="{{ url_for('connexion') }}" class="btn-login">Se Connecter</a>
+                            </li>
+                        </ul>
                     {% endif %}
                 </div>
             </div>
