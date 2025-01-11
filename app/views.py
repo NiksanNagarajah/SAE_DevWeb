@@ -16,14 +16,23 @@ from app.models import *
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if  not current_user.is_authenticated:
+        if not current_user.is_authenticated:
             return redirect(url_for('connexion', next=request))
         if not current_user.is_admin():
-            return redirect(url_for('not_admin'))
+            # return redirect(url_for('not_admin', role='administrateur'))
+            return render_template('not_admin.html', role='administrateur')
         return f(*args, **kwargs)
     return decorated_function
 
-
+def monitor_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('connexion', next=request))
+        if not current_user.is_monitor():
+            return redirect(url_for('not_admin', role='moniteur'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def guest(f):
     @wraps(f)
@@ -184,7 +193,7 @@ def annuler_cours(id_cours):
     except Exception as e:
         mysql.connection.rollback()
         print(e)
-        flash("Une erreur est survenue lors de l'annulation du cours.", "error")
+        flash("Une erreur est survenue lors de l'annulation du cours.", "danger")
 
     return redirect(url_for('mes_cours'))
 
@@ -205,7 +214,7 @@ def nosPoneys():
             flash("Le poney a été ajouté avec succès.", "success")
             return redirect(url_for('nosPoneys'))
         except Exception as e:
-            flash("Une erreur est survenue lors de l'ajout du poney.", "error")
+            flash("Une erreur est survenue lors de l'ajout du poney.", "danger")
     return render_template('gerer_poneys.html', poneys=getPoneys(), form=form)
 
 @app.route('/modifier_poney/<int:poney_id>', methods=['GET', 'POST'])
@@ -223,7 +232,7 @@ def modifier_poney(poney_id):
             flash("Le poney a été modifié avec succès.", "success")
             return redirect(url_for('nosPoneys'))
         except Exception as e:
-            flash("Une erreur est survenue lors de la modification du poney.", "error")
+            flash("Une erreur est survenue lors de la modification du poney.", "danger")
     return render_template('modifier_poney.html', poney=poney, form=form)
 
 
@@ -236,7 +245,7 @@ def supprimer_poney(poney_id):
     except Exception as e:
         print(e)
         print("e"*50)
-        flash("Une erreur est survenue lors de la suppression du poney.", "error")
+        flash("Une erreur est survenue lors de la suppression du poney.", "danger")
     return redirect(url_for('nosPoneys')) 
 
 # class AjoutCoursForm ?????
@@ -261,7 +270,7 @@ def mes_cours():
             flash("La réservation a été ajoutée avec succès.", "success")
             return redirect(url_for('mes_cours'))
         except Exception as e:
-            flash(e.args[1], "error")
+            flash(e.args[1], "danger")
     return render_template('mesCours.html', cours=cours, form=form)
 
 @app.route('/gestion_membres')
@@ -277,7 +286,7 @@ def passerMoniteur(id_membre):
         supprimerReservationDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
-        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
+        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "danger")
     return redirect(url_for('gestion_membres'))
 
 @app.route('/changer_role_admin/<int:id_membre>', methods=['POST'])
@@ -289,7 +298,7 @@ def passerAdmin(id_membre):
         supprimerCoursDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
-        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
+        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "danger")
     return redirect(url_for('gestion_membres'))
 
 @app.route('/changer_role_adherent/<int:id_membre>', methods=['POST'])
@@ -300,7 +309,9 @@ def passerAdherent(id_membre):
         supprimerCoursDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
-        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
+        flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "danger")
     return redirect(url_for('gestion_membres'))
 
+# @app.route('/cours_moniteur/<int:id_membre>')
+# @
 
