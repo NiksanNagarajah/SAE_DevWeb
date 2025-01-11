@@ -21,9 +21,12 @@ class Cours():
     def __repr__(self):
         return f"Cours {self.typeC} le {self.jour} de {self.heureD} à {self.heureF} pour {self.prix}€"
 
-def get_cours():
+def get_cours(idM=None):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
+    if idM:
+        cursor.execute("SELECT * FROM COURS WHERE idM = %s ORDER BY jour, heureD", (idM,))
+    else:
+        cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
     les_cours = cursor.fetchall()
     cursor.close()
 

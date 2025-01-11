@@ -30,7 +30,8 @@ def monitor_required(f):
         if not current_user.is_authenticated:
             return redirect(url_for('connexion', next=request))
         if not current_user.is_monitor():
-            return redirect(url_for('not_admin', role='moniteur'))
+            # return redirect(url_for('not_admin', role='moniteur'))
+            return render_template('not_admin.html', role='moniteur')
         return f(*args, **kwargs)
     return decorated_function
 
@@ -149,6 +150,7 @@ def gestion_cours():
 
 
 @app.route('/modifier_profil', methods=['POST'])
+@login_required
 def modifier_profil():
     try:
         
@@ -218,6 +220,7 @@ def nosPoneys():
     return render_template('gerer_poneys.html', poneys=getPoneys(), form=form)
 
 @app.route('/modifier_poney/<int:poney_id>', methods=['GET', 'POST'])
+@admin_required
 def modifier_poney(poney_id):
     form = AjoutPoneyForm()
     poney = getPoney(poney_id)
@@ -237,6 +240,7 @@ def modifier_poney(poney_id):
 
 
 @app.route('/supprimer_poney/<int:poney_id>', methods=['GET', 'POST'])
+@admin_required
 def supprimer_poney(poney_id):
     try:
         print("i"*50)
@@ -312,6 +316,8 @@ def passerAdherent(id_membre):
         flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "danger")
     return redirect(url_for('gestion_membres'))
 
-# @app.route('/cours_moniteur/<int:id_membre>')
-# @
+@app.route('/cours_moniteur/<int:id_membre>')
+@monitor_required
+def cours_moniteur(id_membre):
+    return render_template('cours_moniteur.html', emploi_du_temps=get_cours(current_user.id_membre))
 
