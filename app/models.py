@@ -21,9 +21,12 @@ class Cours():
     def __repr__(self):
         return f"Cours {self.typeC} le {self.jour} de {self.heureD} à {self.heureF} pour {self.prix}€"
 
-def get_cours():
+def get_cours(idM=None):
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
+    if idM:
+        cursor.execute("SELECT * FROM COURS WHERE idM = %s ORDER BY jour, heureD", (idM,))
+    else:
+        cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
     les_cours = cursor.fetchall()
     cursor.close()
 
@@ -347,3 +350,32 @@ def ajouterReservation(idM, poneyID, coursID):
     cursor.execute("INSERT INTO RESERVATION (idM, poneyID, coursID, coursPayee) VALUES (%s, %s, %s, true)", (idM, poneyID, coursID))
     mysql.connection.commit()
     cursor.close()    
+
+def get_membres(role, idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM MEMBRE WHERE roleM = %s and idM != %s", (role, idM,))
+    membres = cursor.fetchall()
+    cursor.close()
+
+    lesMembres = []
+    for membre in membres:
+        lesMembres.append(Utilisateur(membre[0], membre[1], membre[2], membre[3], membre[4], membre[5], membre[6], membre[7], membre[8], membre[9], membre[10], membre[11], membre[12], membre[13]))
+    return lesMembres
+
+def changerRole(idM, role):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE MEMBRE SET roleM = %s WHERE idM = %s", (role, idM))
+    mysql.connection.commit()
+    cursor.close()
+
+def supprimerReservationDuMembre(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM RESERVATION WHERE idM = %s", (idM,))
+    mysql.connection.commit()
+    cursor.close()
+
+def supprimerCoursDuMembre(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM COURS WHERE idM = %s", (idM,))
+    mysql.connection.commit()
+    cursor.close()

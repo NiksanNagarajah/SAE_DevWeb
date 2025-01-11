@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Emplois du temps{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='calendrier.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Emplois du temps</h1>
+
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'timeGridWeek', 
+            slotDuration: '00:30:00', 
+            allDaySlot: false, 
+            events: {{ emploi_du_temps|tojson|safe }}, // Injecte les données en JSON
+            locale: 'fr', 
+            slotMinTime: "08:00:00", 
+            slotMaxTime: "18:00:00", 
+            eventOverlap: true, 
+            height: "auto", 
+            firstDay: 1, 
+            headerToolbar: { 
+                left: '', 
+                center: '', 
+                right: '', 
+            },
+        });
+        calendar.render();
+    });
+</script>
+
+{% endblock %}

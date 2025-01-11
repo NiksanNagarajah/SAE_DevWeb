@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des Membres{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='gestion_membres.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center mb-4">Gestion des Membres</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Adhérents</h2>
+            <ul class="list-group">
+                {% for adherent in adherents %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ adherent.nom }} {{ adherent.prenom }}</strong> - {{ adherent.email }}
+                    </div>
+                    <div class="btn-group">
+                        <form action="{{ url_for('passerMoniteur', id_membre=adherent.id_membre) }}" method="POST">
+                            <button class="btn btn-primary btn-sm" type="submit" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ adherent.nom }} {{ adherent.prenom }} en tant que Moniteur ? \nToutes ses réservations vont être annulées !');">
+                                Passer Moniteur
+                            </button>
+                        </form>
+                        <form action="{{ url_for('passerAdmin', id_membre=adherent.id_membre) }}" method="POST">
+                            <button class="btn btn-danger btn-sm" type="submit" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ adherent.nom }} {{ adherent.prenom }} en tant qu\'Administrateur ? \nToutes ses réservations vont être annulées !');">
+                                Passer Admin
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-4">
+            <h2>Moniteurs</h2>
+            <ul class="list-group">
+                {% for moniteur in moniteurs %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ moniteur.nom }} {{ moniteur.prenom }}</strong> - {{ moniteur.email }}
+                    </div>
+                    <div class="btn-group">
+                        <form action="{{ url_for('passerAdherent', id_membre=moniteur.id_membre) }}" method="POST">
+                            <button class="btn btn-secondary btn-sm" type="submit" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ moniteur.nom }} {{ moniteur.prenom }} en tant qu\'Adhérent ? \nTous ses cours vont être annulées !');">
+                                Passer Adhérent
+                            </button>
+                        </form>
+                        <form action="{{ url_for('passerAdmin', id_membre=moniteur.id_membre) }}" method="POST">
+                            <button class="btn btn-danger btn-sm" type="submit" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ moniteur.nom }} {{ moniteur.prenom }} en tant qu\'Administrateur ?\nTous ses cours vont être annulées !');">
+                                Passer Admin
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col-md-4">
+            <h2>Administrateurs</h2>
+            <ul class="list-group">
+                {% for admin in admins %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ admin.nom }} {{ admin.prenom }}</strong> - {{ admin.email }}
+                    </div>
+                    <div class="btn-group">
+                        <form action="{{ url_for('passerAdherent', id_membre=admin.id_membre) }}" method="POST">
+                            <button class="btn btn-secondary btn-sm" type="submit" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ admin.nom }} {{ admin.prenom }} en tant qu\'Adhérent ?');">
+                                Passer Adhérent
+                            </button>
+                        </form>
+                        <form action="{{ url_for('passerMoniteur', id_membre=admin.id_membre) }}" method="POST">
+                            <button class="btn btn-primary btn-sm" type="submit" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ admin.nom }} {{ admin.prenom }} en tant que Moniteur ?');">
+                                Passer Moniteur
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
