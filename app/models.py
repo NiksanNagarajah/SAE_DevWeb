@@ -364,3 +364,15 @@ def changerRole(idM, role):
     cursor.execute("UPDATE MEMBRE SET roleM = %s WHERE idM = %s", (role, idM))
     mysql.connection.commit()
     cursor.close()
+
+def supprimerReservationDuMembre(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM RESERVATION WHERE idM = %s", (idM,))
+    mysql.connection.commit()
+    cursor.close()
+
+def supprimerCoursDuMembre(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM COURS WHERE idM = %s", (idM,))
+    mysql.connection.commit()
+    cursor.close()

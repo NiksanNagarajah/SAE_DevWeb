@@ -22,13 +22,13 @@
                     <div class="btn-group">
                         <form action="{{ url_for('passerMoniteur', id_membre=adherent.id_membre) }}" method="POST">
                             <button class="btn btn-primary btn-sm" type="submit" 
-                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ adherent.nom }} {{ adherent.prenom }} en tant que Moniteur ?');">
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ adherent.nom }} {{ adherent.prenom }} en tant que Moniteur ? \nToutes ses réservations vont être annulées !');">
                                 Passer Moniteur
                             </button>
                         </form>
                         <form action="{{ url_for('passerAdmin', id_membre=adherent.id_membre) }}" method="POST">
                             <button class="btn btn-danger btn-sm" type="submit" 
-                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ adherent.nom }} {{ adherent.prenom }} en tant qu\'Administrateur ?');">
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ adherent.nom }} {{ adherent.prenom }} en tant qu\'Administrateur ? \nToutes ses réservations vont être annulées !');">
                                 Passer Admin
                             </button>
                         </form>
@@ -49,13 +49,13 @@
                     <div class="btn-group">
                         <form action="{{ url_for('passerAdherent', id_membre=moniteur.id_membre) }}" method="POST">
                             <button class="btn btn-secondary btn-sm" type="submit" 
-                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ moniteur.nom }} {{ moniteur.prenom }} en tant qu\'Adhérent ?');">
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ moniteur.nom }} {{ moniteur.prenom }} en tant qu\'Adhérent ? \nTous ses cours vont être annulées !');">
                                 Passer Adhérent
                             </button>
                         </form>
                         <form action="{{ url_for('passerAdmin', id_membre=moniteur.id_membre) }}" method="POST">
                             <button class="btn btn-danger btn-sm" type="submit" 
-                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ moniteur.nom }} {{ moniteur.prenom }} en tant qu\'Administrateur ?');">
+                                onclick="return confirm('Êtes-vous sûr de vouloir passer {{ moniteur.nom }} {{ moniteur.prenom }} en tant qu\'Administrateur ?\nTous ses cours vont être annulées !');">
                                 Passer Admin
                             </button>
                         </form>

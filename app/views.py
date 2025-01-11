@@ -274,6 +274,7 @@ def gestion_membres():
 def passerMoniteur(id_membre):
     try:
         changerRole(id_membre, 'Moniteur')
+        supprimerReservationDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
         flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
@@ -284,6 +285,8 @@ def passerMoniteur(id_membre):
 def passerAdmin(id_membre):
     try:
         changerRole(id_membre, 'Administrateur')
+        supprimerReservationDuMembre(id_membre)
+        supprimerCoursDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
         flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
@@ -294,6 +297,7 @@ def passerAdmin(id_membre):
 def passerAdherent(id_membre):
     try:
         changerRole(id_membre, 'Adhérent')
+        supprimerCoursDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
         flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "error")
