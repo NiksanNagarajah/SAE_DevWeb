@@ -28,30 +28,28 @@
                             <a class="nav-link" href="{{ url_for('home') }}">Accueil</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('calendrier') }}">Calendrier</a>
+                            <a class="nav-link" href="{{ url_for('calendrier') }}">Planning</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('club') }}">Club</a>
                         </li>
                         {% if current_user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('mes_cours') }}">Mes Cours</a>
-                            </li>
+                            {% if current_user.is_adherent() %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('mes_cours') }}">Mes Cours</a>
+                                </li>
+                            {% elif current_user.is_admin() %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url_for('gestion_cours') }}">Gestion des Cours</a>
+                                </li>
+                            {% endif %}   
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('nosPoneys') }}">Nos Poneys</a>
-                            </li>
+                            </li> 
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('profil') }}">Profil</a>
                             </li>
-                        {% endif %}
-                        {% if current_user.is_authenticated and current_user.is_admin() %}
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('gestion_cours') }}">Gestion des Cours</a>
-                            </li>
-
-                        {% endif %}    
-                       
+                        {% endif %} 
                     </ul>
 
                     {% if current_user.is_authenticated %}
