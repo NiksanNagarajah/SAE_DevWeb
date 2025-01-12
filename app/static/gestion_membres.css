@@ -71,3 +71,48 @@ button:hover {
 .btn-secondary:hover {
     background-color: #5a6268;
 }
+
+@media (max-width: 1400px) {
+    .container {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
+
+    .list-group-item {
+        flex-direction: column; 
+        align-items: flex-start;
+    }
+
+    .btn-group {
+        margin-top: 10px;
+        width: 100%; 
+        justify-content: space-between;
+    }
+
+    .btn-group form {
+        margin-left: 0; 
+    }
+
+    .btn.btn-primary.btn-sm, .btn.btn-danger.btn-sm, .btn.btn-secondary.btn-sm {
+        width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        main .container {
+            max-width: max-content;
+        }
+    }
+
+    main {
+        margin-bottom: 20px;
+    }
+}
+

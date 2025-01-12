@@ -19,6 +19,10 @@ h1, h2 {
     margin-top: 20px;
 }
 
+.table-container {
+    overflow-x: auto; 
+}
+
 .table th, .table td {
     text-align: center;
     vertical-align: middle;
@@ -94,6 +98,12 @@ button[type="submit"] {
     .col-md-9 {
         flex: 0 0 auto;
         width: 100%;
+        max-width: max-content;
+    }
+
+    .col-md-4 {
+        width: max-content;
+        /* width: 100%; */
     }
 }
 
@@ -111,14 +121,14 @@ button[type="submit"] {
     }
 }
 
-.table-container, form {
+form {
     margin-top: 20px;
 }
 
 @media (max-width: 992px) {
-    /* .row {
+    .row {
         flex-direction: column;
-    } */
+    }
 
     .col-md-4, .col-md-8 {
         max-width: 100%;
@@ -126,15 +136,13 @@ button[type="submit"] {
     }
 }
 
-@media (min-width: 992px) {
-    .table-container {
-        margin-right: 20px;
-    }
-}
-
 .btns {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     gap: 10px;
     /* margin-top: 10px; */
+}
+
+.row {
+    flex-wrap: nowrap;
 }

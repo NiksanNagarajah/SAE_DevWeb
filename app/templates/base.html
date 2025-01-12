@@ -11,7 +11,12 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-md navbar-dark"> <!-- sm(576px), md(768px), lg(992px) ou xl(1200px)-->
+        <nav class="navbar navbar-dark 
+        {% if (current_user.is_authenticated and current_user.is_adherent()) or not current_user.is_authenticated %}
+            navbar-expand-md
+        {% else %}
+            navbar-expand-lg
+        {% endif %}"> <!-- sm(576px), md(768px), lg(992px) ou xl(1200px)-->
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url_for('home') }}">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Grand Galop Logo">
