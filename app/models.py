@@ -190,6 +190,7 @@ def cours_reserves(user_id):
         ]
 
     except Exception as e:
+        flash("Erreur lors de la récupération des cours réservés", "danger")
         print(f"Erreur lors de la récupération des cours : {e}")
         cours_reserves = []
 
@@ -237,6 +238,7 @@ def profil_utilisateur(user_id):
         ]
 
     except Exception as e:
+        flash("Erreur lors de la récupération du profil", "danger")
         print(f"Erreur lors de la récupération du profil : {e}")
         profil_ = []
 
@@ -413,23 +415,10 @@ def supprimerCours(coursID):
     cursor.close()
 
 def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID):
-    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
     cursor = mysql.connection.cursor()
-    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
     cursor.execute("UPDATE COURS SET typeC = %s, duree = %s, nbParticipantsMax = %s, jour = %s, heureD = %s, heureF = %s, prix = %s, idM = %s WHERE coursID = %s", (typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID))
-    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
     mysql.connection.commit()
-    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
     cursor.close()
-    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
-
-# Modifier Cours ???
-
-# def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, prix, coursID):
-#     cursor = mysql.connection.cursor()
-#     cursor.execute("UPDATE COURS SET typeC = %s, duree = %s, nbParticipantsMax = %s, jour = %s, heureD = %s, prix = %s WHERE coursID = %s", (typeC, duree, nbParticipantsMax, jour, heureD, prix, coursID))
-#     mysql.connection.commit()
-#     cursor.close()
 
 def getMoniteursForCours(idM=None):
     cursor = mysql.connection.cursor()
@@ -458,7 +447,6 @@ def moniteurACours(coursID, jour, heureD, heureF, idM):
     cursor.execute("SELECT * FROM COURS WHERE coursID != %s and idM = %s AND jour = %s AND ((heureD < %s AND heureF > %s) OR (heureD < %s AND heureF > %s) OR (heureD >= %s AND heureF <= %s))", (coursID, idM, jour, heureD, heureD, heureF, heureF, heureD, heureF))
     cours = cursor.fetchall()
     cursor.close()
-    print(cours)
     if len(cours) > 0:
         return True
     return False

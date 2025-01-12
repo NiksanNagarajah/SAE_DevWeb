@@ -102,13 +102,11 @@ def connexion():
         if user and check_password_hash(user.mot_de_passe, motdepasse):
             print("Connexion réussie")
             login_user(user)
-            print(current_user)
+            # print(current_user)
         else:
             return render_template('connexion.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
         return redirect(url_for('home'))
     return render_template('connexion.html', form=form)
-
-
 
 @app.route('/deconnexion')
 @login_required
@@ -116,15 +114,9 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-# @app.route('/calendrier')
-# def calendrier():
-    # emploi_du_temps = get_cours()
-    # return render_template('calendrier.html', emploi_du_temps=emploi_du_temps[0], horaires=emploi_du_temps[1])
-
 @app.route('/calendrier')
 def calendrier():
     emploi_du_temps = get_cours()
-    print(emploi_du_temps)
     return render_template('calendrier.html', emploi_du_temps=emploi_du_temps)
 
 
@@ -163,9 +155,6 @@ def gestion_cours():
     if form.validate_on_submit():
         try:
             ajouterCours(form.typeC.data, form.duree.data, form.nbParticipantsMax.data, form.jour.data, form.heureD.data, form.prix.data, form.idM.data)
-            print(form.heureD.data)
-            print(type(form.heureD.data))
-            print("i"*50)
             flash("Le cours a été ajouté avec succès.", "success")
             return redirect(url_for('gestion_cours'))
         except Exception as e:
@@ -203,7 +192,6 @@ def modifier_cours(id_cours):
 
     form.idM.choices = getMoniteursForCours(cours.idM)
     if request.method == 'GET':
-        # Conversion des heures si ce sont des objets timedelta
         if isinstance(cours.heureD, timedelta):
             form.heureD.data = (datetime.min + cours.heureD).time()
         else:
@@ -220,7 +208,6 @@ def modifier_cours(id_cours):
         form.jour.data = cours.jour
         form.prix.data = cours.prix
         form.idM.data = next((moniteur[0] for moniteur in form.idM.choices if moniteur[0] == cours.idM), None)
-        print(form.idM.choices)
 
     if form.validate_on_submit():
         try:
@@ -340,12 +327,10 @@ def modifier_poney(poney_id):
 @admin_required
 def supprimer_poney(poney_id):
     try:
-        print("i"*50)
         supprimerPoney(poney_id)
         flash("Le poney a été supprimé avec succès.", "success")
     except Exception as e:
         print(e)
-        print("e"*50)
         flash("Une erreur est survenue lors de la suppression du poney.", "danger")
     return redirect(url_for('nosPoneys')) 
 
