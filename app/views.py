@@ -201,7 +201,7 @@ def modifier_cours(id_cours):
     form = ModifierCoursForm()
     cours = getCours(id_cours)
 
-    form.idM.choices = getMoniteursForCours()
+    form.idM.choices = getMoniteursForCours(cours.idM)
     if request.method == 'GET':
         # Conversion des heures si ce sont des objets timedelta
         if isinstance(cours.heureD, timedelta):
@@ -219,10 +219,7 @@ def modifier_cours(id_cours):
         form.nbParticipantsMax.data = cours.nbParticipantsMax
         form.jour.data = cours.jour
         form.prix.data = cours.prix
-        for moniteur in form.idM.choices:
-            if moniteur[0] == cours.idM:
-                form.idM.data = moniteur[0]
-                break
+        form.idM.data = next((moniteur[0] for moniteur in form.idM.choices if moniteur[0] == cours.idM), None)
         print(form.idM.choices)
 
     if form.validate_on_submit():
@@ -233,24 +230,19 @@ def modifier_cours(id_cours):
             start_time = datetime.combine(datetime.today(), form.heureD.data)
             end_time = datetime.combine(datetime.today(), form.heureF.data)
             time_difference = end_time - start_time
-            print("#"*50)
             expected_duration = timedelta(hours=int(form.duree.data))
-            print("-"*50)
             if time_difference != expected_duration:
-                print("i"*50)
                 flash("La durée du cours ne correspond pas à l'intervalle entre l'heure de début et l'heure de fin.", "danger")
                 return render_template('modifier_cours.html', cours=cours, form=form)
+            if moniteurACours(form.coursID.data, form.jour.data, form.heureD.data, form.heureF.data, form.idM.data):
+                flash("Le moniteur sélectionné est déjà occupé à ce moment-là.", "danger")
+                return render_template('modifier_cours.html', cours=cours, form=form)
             modifierCours(form.typeC.data, form.duree.data, form.nbParticipantsMax.data, form.jour.data, form.heureD.data, form.heureF.data, form.prix.data, form.idM.data, form.coursID.data)
-            print(form.heureD.data)
-            print(type(form.heureD.data))
-            print("i"*50)
-            print(request.method)
             flash("Le cours a été modifié avec succès.", "success")
             return redirect(url_for('gestion_cours'))
         except Exception as e:
             flash("Une erreur est survenue lors de la modification du cours.", "danger")
             print(e)
-            flash(e, "danger")
     return render_template('modifier_cours.html', cours=cours, form=form)
 
 

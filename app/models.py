@@ -431,7 +431,7 @@ def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, i
 #     mysql.connection.commit()
 #     cursor.close()
 
-def getMoniteursForCours():
+def getMoniteursForCours(idM=None):
     cursor = mysql.connection.cursor()
     cursor.execute("SELECT * FROM MEMBRE WHERE roleM = 'Moniteur'")
     moniteurs = cursor.fetchall()
@@ -439,7 +439,11 @@ def getMoniteursForCours():
 
     lesMoniteurs = []
     for moniteur in moniteurs:
+        if idM and moniteur[0] == idM:
+            moniteurCourant = (moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13]))
         lesMoniteurs.append((moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13])))
+    if idM:
+        lesMoniteurs.insert(0, moniteurCourant)
     return lesMoniteurs
 
 def getCours(coursID):
@@ -448,3 +452,15 @@ def getCours(coursID):
     cours = cursor.fetchone()
     cursor.close()
     return Cours(cours[0], cours[1], cours[2], cours[3], cours[4], cours[5], cours[6], cours[7], cours[8])
+
+def moniteurACours(coursID, jour, heureD, heureF, idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS WHERE coursID != %s and idM = %s AND jour = %s AND ((heureD < %s AND heureF > %s) OR (heureD < %s AND heureF > %s) OR (heureD >= %s AND heureF <= %s))", (coursID, idM, jour, heureD, heureD, heureF, heureF, heureD, heureF))
+    cours = cursor.fetchall()
+    cursor.close()
+    print(cours)
+    if len(cours) > 0:
+        return True
+    return False
+
+    
