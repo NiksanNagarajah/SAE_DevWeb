@@ -29,7 +29,7 @@ CREATE TABLE COURS (
     typeC ENUM('Collectif', 'Particulier'), -- Utilisation d'ENUM pour les types
     duree INT(1) CHECK (duree IN (1, 2)), -- Limite à 1 ou 2 heures de cours
     nbParticipantsMax INT(4) DEFAULT 10 CHECK (nbParticipantsMax <= 10), -- Limite à 10 participants
-    jour ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'), -- Utilisation d'ENUM pour les jours
+    jour ENUM('Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'), -- Utilisation d'ENUM pour les jours
     heureD TIME,
     heureF TIME DEFAULT ADDTIME(heureD, duree * 10000), -- Calcul de l'heure de fin
     prix DECIMAL(10,2),

@@ -58,7 +58,7 @@ def get_cours(idM=None):
         end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
         nom_Moniteur = get_monitor_name(cours_item.idM)
         events.append({
-            "title": f"{cours_item.typeC} - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]} - {cours_item.prix}€",
+            "title": f"{cours_item.typeC} - {cours_item.nbParticipantsMax} participants Max - {nom_Moniteur[0]} {nom_Moniteur[1]} - {cours_item.prix}€",
             "start": start_time,
             "end": end_time,
         })
@@ -99,6 +99,9 @@ class Utilisateur(UserMixin):
     
     def is_adherent(self):
         return self.role == 'Adhérent'
+    
+    def __repr__(self):
+        return f"{self.nom} {self.prenom}"
 
 @login_manager.user_loader
 def load_user(idM):
@@ -380,15 +383,21 @@ def supprimerCoursDuMembre(idM):
     mysql.connection.commit()
     cursor.close()
 
+def supprimerReservationDuCours(coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM RESERVATION WHERE coursID = %s", (coursID,))
+    mysql.connection.commit()
+    cursor.close()
+
 def getCoursSimple():
     cursor = mysql.connection.cursor()
-    cursor.execute("SELECT * FROM COURS")
+    cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
     cours = cursor.fetchall()
     cursor.close()
 
     lesCours = []
     for cour in cours:
-        lesCours.append(Cours(cour[0], cour[1], cour[2], cour[3], cour[4], cour[5], cour[6], cour[7], cour[8]))
+        lesCours.append(Cours(cour[0], cour[1], cour[2], cour[3], cour[4], cour[5], cour[6], cour[7], get_monitor_name(cour[8])))
     return lesCours
 
 def ajouterCours(typeC, duree, nbParticipantsMax, jour, heureD, prix, idM):
@@ -403,6 +412,17 @@ def supprimerCours(coursID):
     mysql.connection.commit()
     cursor.close()
 
+def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID):
+    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
+    cursor = mysql.connection.cursor()
+    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
+    cursor.execute("UPDATE COURS SET typeC = %s, duree = %s, nbParticipantsMax = %s, jour = %s, heureD = %s, heureF = %s, prix = %s, idM = %s WHERE coursID = %s", (typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID))
+    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
+    mysql.connection.commit()
+    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
+    cursor.close()
+    print(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID)
+
 # Modifier Cours ???
 
 # def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, prix, coursID):
@@ -410,3 +430,21 @@ def supprimerCours(coursID):
 #     cursor.execute("UPDATE COURS SET typeC = %s, duree = %s, nbParticipantsMax = %s, jour = %s, heureD = %s, prix = %s WHERE coursID = %s", (typeC, duree, nbParticipantsMax, jour, heureD, prix, coursID))
 #     mysql.connection.commit()
 #     cursor.close()
+
+def getMoniteursForCours():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM MEMBRE WHERE roleM = 'Moniteur'")
+    moniteurs = cursor.fetchall()
+    cursor.close()
+
+    lesMoniteurs = []
+    for moniteur in moniteurs:
+        lesMoniteurs.append((moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13])))
+    return lesMoniteurs
+
+def getCours(coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS WHERE coursID = %s", (coursID,))
+    cours = cursor.fetchone()
+    cursor.close()
+    return Cours(cours[0], cours[1], cours[2], cours[3], cours[4], cours[5], cours[6], cours[7], cours[8])
