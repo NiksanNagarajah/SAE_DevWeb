@@ -26,7 +26,7 @@ header nav ul a {
     margin: 0 5px;
 }
 
-header nav ul a::after {
+header nav ul .nav-link::after {
     content: '';
     position: absolute;
     width: 0;
