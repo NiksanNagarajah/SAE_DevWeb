@@ -88,6 +88,10 @@ footer p {
     color: white !important;
 }
 
+.nav-item {
+    align-content: center;
+}
+
 /* .btn-login {
     background-color: black;
     color: white;

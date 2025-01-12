@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestion des cours{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='gestion_cours.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center">Gestion des cours</h1>
+
+    <div class="row my-4">
+        <div class="col-md-9 col-lg-9">
+            <h2>Liste des cours</h2>
+            <div class="table-container">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Participants max</th>
+                            <th>Jour</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Prix (€)</th>
+                            <th>Moniteur</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cours in cours %}
+                        <tr>
+                            <td>{{ cours.typeC }}</td>
+                            <td>{{ cours.nbParticipantsMax }}</td>
+                            <td>{{ cours.jour }}</td>
+                            <td>{{ cours.heureD }}</td>
+                            <td>{{ cours.heureF }}</td>
+                            <td>{{ cours.prix }}</td>
+                            <td>{{ cours.idM[0] }} {{ cours.idM[1] }}</td>
+                            <td>
+                                <div class="btns">
+                                    <a href="{{ url_for('modifier_cours', id_cours=cours.coursID) }}" class="btn btn-warning">Modifier</a>
+                                    <a href="{{ url_for('supprimer_cours', id_cours=cours.coursID) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ? \nLes réservations effectuées par les adhérents pour ce cours seront annulées !');">Supprimer</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-lg-4">
+            <h2>Ajouter un cours</h2>
+            <form method="POST" action="{{ url_for('gestion_cours') }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group mb-3">
+                    {{ form.typeC.label(class="form-label") }}
+                    {{ form.typeC(class="form-select") }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.duree.label(class="form-label") }}
+                    {{ form.duree(class="form-select") }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.nbParticipantsMax.label(class="form-label") }}
+                    {{ form.nbParticipantsMax(class="form-select") }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.jour.label(class="form-label") }}
+                    {{ form.jour(class="form-select") }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.heureD.label(class="form-label") }}
+                    {{ form.heureD(class="form-control") }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.prix.label(class="form-label") }}
+                    {{ form.prix(class="form-control") }}
+                </div>
+                <div class="form-group mb-3">
+                    {{ form.idM.label(class="form-label") }}
+                    {{ form.idM(class="form-select") }}
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Ajouter le cours</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

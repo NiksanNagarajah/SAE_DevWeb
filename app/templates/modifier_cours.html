@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier un Cours{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='modifier_cours.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center">Modifier le Cours</h1>
+
+    <div class="row justify-content-center my-4">
+        <div class="col-md-8">
+            <form method="POST" action="{{ url_for('modifier_cours', id_cours=cours.coursID) }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group mb-3">
+                    {{ form.typeC.label(class="form-label") }}
+                    {{ form.typeC(class="form-select") }}
+                </div>
+                
+                <div class="form-group mb-3">
+                    {{ form.duree.label(class="form-label") }}
+                    {{ form.duree(class="form-select") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.nbParticipantsMax.label(class="form-label") }}
+                    {{ form.nbParticipantsMax(class="form-select") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.jour.label(class="form-label") }}
+                    {{ form.jour(class="form-select") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.heureD.label(class="form-label") }}
+                    {{ form.heureD(class="form-control") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.heureF.label(class="form-label") }}
+                    {{ form.heureF(class="form-control") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.prix.label(class="form-label") }}
+                    {{ form.prix(class="form-control") }}
+                </div>
+
+                <div class="form-group mb-3">
+                    {{ form.idM.label(class="form-label") }}
+                    {{ form.idM(class="form-select") }}
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">{{ form.submit.label }}</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import render_template, request, redirect, url_for, flash
 from flask_wtf import FlaskForm
-from wtforms import FloatField, SelectField, StringField, PasswordField, HiddenField, SubmitField, DateField
+from wtforms import FloatField, SelectField, StringField, PasswordField, HiddenField, SubmitField, DateField, TimeField
 from wtforms.validators import DataRequired, Email, Regexp
 from . import app  # ou import app si app est défini dans __init__.py
 
@@ -10,6 +10,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models import *
+from datetime import timedelta, datetime, time
 
 
 
@@ -101,13 +102,11 @@ def connexion():
         if user and check_password_hash(user.mot_de_passe, motdepasse):
             print("Connexion réussie")
             login_user(user)
-            print(current_user)
+            # print(current_user)
         else:
             return render_template('connexion.html', error="Nom d'utilisateur ou mot de passe incorrect", form=form)
         return redirect(url_for('home'))
     return render_template('connexion.html', form=form)
-
-
 
 @app.route('/deconnexion')
 @login_required
@@ -115,15 +114,9 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
-# @app.route('/calendrier')
-# def calendrier():
-    # emploi_du_temps = get_cours()
-    # return render_template('calendrier.html', emploi_du_temps=emploi_du_temps[0], horaires=emploi_du_temps[1])
-
 @app.route('/calendrier')
 def calendrier():
     emploi_du_temps = get_cours()
-    print(emploi_du_temps)
     return render_template('calendrier.html', emploi_du_temps=emploi_du_temps)
 
 
@@ -142,11 +135,102 @@ def profil():
 def not_admin():
     return render_template("not_admin.html")
 
-@app.route('/gestion_cours')
+class AjoutCoursForm(FlaskForm):
+    # typeC = SelectField('Type', choices=[('Collectif', 'Collectif'), ('Particulier', 'Particulier')], validators=[DataRequired()])
+    typeC = SelectField('Type', choices=['Collectif', 'Particulier'], validators=[DataRequired()])
+    # duree = SelectField('Durée', choices=[(1, 1), (2, 2)], validators=[DataRequired()])
+    duree = SelectField('Durée', choices=[1, 2], validators=[DataRequired()])
+    nbParticipantsMax = SelectField('Nombre de participants maximum', choices=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], validators=[DataRequired()])
+    jour = SelectField('Jour', choices=['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'], validators=[DataRequired()])
+    heureD = TimeField('Heure de début', validators=[DataRequired()])
+    prix = FloatField('Prix', validators=[DataRequired()])
+    idM = SelectField('Moniteur', choices=[], validators=[DataRequired()])
+    submit = StringField('Ajouter')
+
+@app.route('/gestion_cours', methods=['GET', 'POST'])
 @admin_required
 def gestion_cours():
-    return render_template('gestion_cours.html')
+    form = AjoutCoursForm()
+    form.idM.choices = getMoniteursForCours()
+    if form.validate_on_submit():
+        try:
+            ajouterCours(form.typeC.data, form.duree.data, form.nbParticipantsMax.data, form.jour.data, form.heureD.data, form.prix.data, form.idM.data)
+            flash("Le cours a été ajouté avec succès.", "success")
+            return redirect(url_for('gestion_cours'))
+        except Exception as e:
+            flash("Une erreur est survenue lors de l'ajout du cours.", "danger")
+    return render_template('gestion_cours.html', form=form, cours=getCoursSimple())
 
+@app.route('/supprimer_cours/<int:id_cours>', methods=['GET', 'POST'])
+@admin_required
+def supprimer_cours(id_cours):
+    try:
+        supprimerReservationDuCours(id_cours)
+        supprimerCours(id_cours)
+        flash("Le cours a été supprimé avec succès.", "success")
+    except Exception as e:
+        flash("Une erreur est survenue lors de la suppression du cours.", "danger")
+    return redirect(url_for('gestion_cours'))
+
+class ModifierCoursForm(FlaskForm):
+    coursID = HiddenField('ID')
+    typeC = SelectField('Type', choices=['Collectif', 'Particulier'], validators=[DataRequired()])
+    duree = SelectField('Durée', choices=[1, 2], validators=[DataRequired()])
+    nbParticipantsMax = SelectField('Nombre de participants maximum', choices=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], validators=[DataRequired()])
+    jour = SelectField('Jour', choices=['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'], validators=[DataRequired()])
+    heureD = TimeField('Heure de début', validators=[DataRequired()])
+    heureF = TimeField('Heure de fin', validators=[DataRequired()])
+    prix = FloatField('Prix', validators=[DataRequired()])
+    idM = SelectField('Moniteur', choices=[], validators=[DataRequired()])
+    submit = StringField('Modifier')
+
+@app.route('/modifier_cours/<int:id_cours>', methods=['GET', 'POST'])
+@admin_required
+def modifier_cours(id_cours):
+    form = ModifierCoursForm()
+    cours = getCours(id_cours)
+
+    form.idM.choices = getMoniteursForCours(cours.idM)
+    if request.method == 'GET':
+        if isinstance(cours.heureD, timedelta):
+            form.heureD.data = (datetime.min + cours.heureD).time()
+        else:
+            form.heureD.data = cours.heureD
+
+        if isinstance(cours.heureF, timedelta):
+            form.heureF.data = (datetime.min + cours.heureF).time()
+        else:
+            form.heureF.data = cours.heureF 
+        form.coursID.data = cours.coursID
+        form.typeC.data = cours.typeC
+        form.duree.data = cours.duree
+        form.nbParticipantsMax.data = cours.nbParticipantsMax
+        form.jour.data = cours.jour
+        form.prix.data = cours.prix
+        form.idM.data = next((moniteur[0] for moniteur in form.idM.choices if moniteur[0] == cours.idM), None)
+
+    if form.validate_on_submit():
+        try:
+            if form.heureD.data > form.heureF.data:
+                flash("L'heure de début doit être inférieure à l'heure de fin.", "danger")
+                return render_template('modifier_cours.html', cours=cours, form=form)
+            start_time = datetime.combine(datetime.today(), form.heureD.data)
+            end_time = datetime.combine(datetime.today(), form.heureF.data)
+            time_difference = end_time - start_time
+            expected_duration = timedelta(hours=int(form.duree.data))
+            if time_difference != expected_duration:
+                flash("La durée du cours ne correspond pas à l'intervalle entre l'heure de début et l'heure de fin.", "danger")
+                return render_template('modifier_cours.html', cours=cours, form=form)
+            if moniteurACours(form.coursID.data, form.jour.data, form.heureD.data, form.heureF.data, form.idM.data):
+                flash("Le moniteur sélectionné est déjà occupé à ce moment-là.", "danger")
+                return render_template('modifier_cours.html', cours=cours, form=form)
+            modifierCours(form.typeC.data, form.duree.data, form.nbParticipantsMax.data, form.jour.data, form.heureD.data, form.heureF.data, form.prix.data, form.idM.data, form.coursID.data)
+            flash("Le cours a été modifié avec succès.", "success")
+            return redirect(url_for('gestion_cours'))
+        except Exception as e:
+            flash("Une erreur est survenue lors de la modification du cours.", "danger")
+            print(e)
+    return render_template('modifier_cours.html', cours=cours, form=form)
 
 
 @app.route('/modifier_profil', methods=['POST'])
@@ -243,16 +327,12 @@ def modifier_poney(poney_id):
 @admin_required
 def supprimer_poney(poney_id):
     try:
-        print("i"*50)
         supprimerPoney(poney_id)
         flash("Le poney a été supprimé avec succès.", "success")
     except Exception as e:
         print(e)
-        print("e"*50)
         flash("Une erreur est survenue lors de la suppression du poney.", "danger")
     return redirect(url_for('nosPoneys')) 
-
-# class AjoutCoursForm ?????
 
 class AjoutReservationForm(FlaskForm):
     # poneyID = SelectField('Poney', choices=getPoneyForRerservation(current_user.poids), validators=[DataRequired()])

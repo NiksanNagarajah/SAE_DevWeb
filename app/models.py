@@ -58,7 +58,7 @@ def get_cours(idM=None):
         end_time = f"{jours_mapping[cours_item.jour]}T{cours_item.heureF}"
         nom_Moniteur = get_monitor_name(cours_item.idM)
         events.append({
-            "title": f"{cours_item.typeC} - {cours_item.nbParticipantsMax} participant Max - {nom_Moniteur[0]} {nom_Moniteur[1]} - {cours_item.prix}€",
+            "title": f"{cours_item.typeC} - {cours_item.nbParticipantsMax} participants Max - {nom_Moniteur[0]} {nom_Moniteur[1]} - {cours_item.prix}€",
             "start": start_time,
             "end": end_time,
         })
@@ -99,6 +99,9 @@ class Utilisateur(UserMixin):
     
     def is_adherent(self):
         return self.role == 'Adhérent'
+    
+    def __repr__(self):
+        return f"{self.nom} {self.prenom}"
 
 @login_manager.user_loader
 def load_user(idM):
@@ -187,6 +190,7 @@ def cours_reserves(user_id):
         ]
 
     except Exception as e:
+        flash("Erreur lors de la récupération des cours réservés", "danger")
         print(f"Erreur lors de la récupération des cours : {e}")
         cours_reserves = []
 
@@ -234,6 +238,7 @@ def profil_utilisateur(user_id):
         ]
 
     except Exception as e:
+        flash("Erreur lors de la récupération du profil", "danger")
         print(f"Erreur lors de la récupération du profil : {e}")
         profil_ = []
 
@@ -379,3 +384,71 @@ def supprimerCoursDuMembre(idM):
     cursor.execute("DELETE FROM COURS WHERE idM = %s", (idM,))
     mysql.connection.commit()
     cursor.close()
+
+def supprimerReservationDuCours(coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM RESERVATION WHERE coursID = %s", (coursID,))
+    mysql.connection.commit()
+    cursor.close()
+
+def getCoursSimple():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS ORDER BY jour, heureD")
+    cours = cursor.fetchall()
+    cursor.close()
+
+    lesCours = []
+    for cour in cours:
+        lesCours.append(Cours(cour[0], cour[1], cour[2], cour[3], cour[4], cour[5], cour[6], cour[7], get_monitor_name(cour[8])))
+    return lesCours
+
+def ajouterCours(typeC, duree, nbParticipantsMax, jour, heureD, prix, idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("INSERT INTO COURS (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM) VALUES (%s, %s, %s, %s, %s, %s, %s)", (typeC, duree, nbParticipantsMax, jour, heureD, prix, idM))
+    mysql.connection.commit()
+    cursor.close()
+
+def supprimerCours(coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM COURS WHERE coursID = %s", (coursID,))
+    mysql.connection.commit()
+    cursor.close()
+
+def modifierCours(typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("UPDATE COURS SET typeC = %s, duree = %s, nbParticipantsMax = %s, jour = %s, heureD = %s, heureF = %s, prix = %s, idM = %s WHERE coursID = %s", (typeC, duree, nbParticipantsMax, jour, heureD, heureF, prix, idM, coursID))
+    mysql.connection.commit()
+    cursor.close()
+
+def getMoniteursForCours(idM=None):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM MEMBRE WHERE roleM = 'Moniteur'")
+    moniteurs = cursor.fetchall()
+    cursor.close()
+
+    lesMoniteurs = []
+    for moniteur in moniteurs:
+        if idM and moniteur[0] == idM:
+            moniteurCourant = (moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13]))
+        lesMoniteurs.append((moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13])))
+    if idM:
+        lesMoniteurs.insert(0, moniteurCourant)
+    return lesMoniteurs
+
+def getCours(coursID):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS WHERE coursID = %s", (coursID,))
+    cours = cursor.fetchone()
+    cursor.close()
+    return Cours(cours[0], cours[1], cours[2], cours[3], cours[4], cours[5], cours[6], cours[7], cours[8])
+
+def moniteurACours(coursID, jour, heureD, heureF, idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM COURS WHERE coursID != %s and idM = %s AND jour = %s AND ((heureD < %s AND heureF > %s) OR (heureD < %s AND heureF > %s) OR (heureD >= %s AND heureF <= %s))", (coursID, idM, jour, heureD, heureD, heureF, heureF, heureD, heureF))
+    cours = cursor.fetchall()
+    cursor.close()
+    if len(cours) > 0:
+        return True
+    return False
+
+    
