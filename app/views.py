@@ -154,11 +154,15 @@ def gestion_cours():
     form.idM.choices = getMoniteursForCours()
     if form.validate_on_submit():
         try:
+            if form.typeC.data == 'Particulier' and int(form.nbParticipantsMax.data) > 1:
+                flash("Un cours particulier ne peut pas avoir plus d'un participant.", "danger")
+                return render_template('gestion_cours.html', form=form, cours=getCoursSimple())
             ajouterCours(form.typeC.data, form.duree.data, form.nbParticipantsMax.data, form.jour.data, form.heureD.data, form.prix.data, form.idM.data)
             flash("Le cours a été ajouté avec succès.", "success")
             return redirect(url_for('gestion_cours'))
         except Exception as e:
             flash("Une erreur est survenue lors de l'ajout du cours.", "danger")
+            print(e)
     return render_template('gestion_cours.html', form=form, cours=getCoursSimple())
 
 @app.route('/supprimer_cours/<int:id_cours>', methods=['GET', 'POST'])

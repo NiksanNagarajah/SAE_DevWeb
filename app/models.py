@@ -168,6 +168,7 @@ def cours_reserves(user_id):
             FROM RESERVATION r
             JOIN COURS c ON r.coursID = c.coursID
             WHERE r.idM = %s
+            ORDER BY c.jour, c.heureD
         """
         cursor.execute(query, (user_id,))
         cours_reserves_raw = cursor.fetchall()
