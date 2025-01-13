@@ -231,7 +231,8 @@ BEGIN
     WHERE R.poneyID = NEW.poneyID
     AND (
         (C.heureD < horaireCoursNewFin AND C.heureF > horaireCoursNewDebut)  -- Chevauchement de temps
-    );
+    )
+    AND C.jour = (SELECT jour FROM COURS WHERE coursID = NEW.coursID);
     
     -- Vérifier s'il y a un conflit d'horaire pour le même membre
     SELECT COUNT(*) INTO membreConflit
@@ -240,7 +241,8 @@ BEGIN
     WHERE R.idM = NEW.idM
     AND (
         (C.heureD < horaireCoursNewFin AND C.heureF > horaireCoursNewDebut)  -- Chevauchement de temps
-    );
+    )
+    AND C.jour = (SELECT jour FROM COURS WHERE coursID = NEW.coursID);
 
     -- Si un conflit pour le poney est trouvé, empêcher la réservation
     IF poneyConflit > 0 THEN
