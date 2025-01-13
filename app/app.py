@@ -12,15 +12,10 @@ login_manager.login_view = 'login'
 app.config["SECRET_KEY"] = 'e9fb1c87-3809-4891-88d2-abfcde76d817'
 app.config['BOOTSTRAP_SERVE_LOCAL'] = True
 
-# app.config['MYSQL_HOST'] = 'servinfo-maria'
-# app.config['MYSQL_USER'] = 'nagarajah'
-# app.config['MYSQL_PASSWORD'] = 'nagarajah'
-# app.config['MYSQL_DB'] = 'DBnagarajah'
-
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'test'
-app.config['MYSQL_PASSWORD'] = 'test'
-app.config['MYSQL_DB'] = 'PONEY'
+app.config['MYSQL_HOST'] = 'servinfo-maria'
+app.config['MYSQL_USER'] = 'nagarajah'
+app.config['MYSQL_PASSWORD'] = 'nagarajah'
+app.config['MYSQL_DB'] = 'DBnagarajah'
 
 mysql=MySQL(app)
 

@@ -12,7 +12,7 @@
 <body>
     <header>
         <nav class="navbar navbar-dark 
-        {% if (current_user.is_authenticated and current_user.is_adherent()) or not current_user.is_authenticated %}
+        {% if not current_user.is_authenticated %}
             navbar-expand-md
         {% else %}
             navbar-expand-lg
