@@ -9,13 +9,63 @@
 {% block content %}
 
 <section class="presentation">
-    <div class="column">
-        <img src="{{ url_for('static', filename='images/logo.png' )}}" alt="Logo du club">
-    </div>
     <div class="presentation-content">
-        <h1 class="presentation-title">Grand Galop</h1>
-        <p>Quod cum ita sit, paucae domus studiorum seriis cultibus antea celebratae nunc ludibriis ignaviae torpentis exundanti, vocali sono, perfabili tintinnitu fidium resultantes, denique pro philosophico cantore et in locum oratoris doctor. Artium ludicrarum accultur et bybliothecis sepulcrorum ritus in perpetuum clausis organia fabricantur hydraulicae, et lyrae ad speciem carptorum ingentes tibiaeque et histrionici gestus instrumenta non levia. Quod cum ita sit, paucae domus studiorum seriis cultibus antea celebratae nunc ludibriis ignaviae torpentis exundanti, vocali sono, perfabili tintinnitu fidium resultantes, denique pro philosophico cantore et in locum oratoris doctor.</p>
+        <h1 class="presentation-title">À Propos de Grand Galop</h1>
+        <p>
+            Bienvenue au club Grand Galop, un lieu dédié à la passion de l'équitation au cœur de la Sologne. Depuis plusieurs années, nous accueillons petits et grands pour partager l’amour des poneys et du sport équestre. 
+            Avec une trentaine de poneys et des cours adaptés à tous les niveaux, notre mission est de transmettre notre savoir-faire dans un cadre convivial et sécurisé.
+        </p>
     </div>
+</section>
 
+<section class="about">
+    <div class="about-content">
+        <div class="about-banner">
+            <img src="{{ url_for('static', filename='images/banner_club.jpg') }}" alt="Bannière du club">
+        </div>
+        <div>
+            <h1 class="about-title">Chez nous</h1>
+            <p>
+                Que vous soyez débutant ou cavalier confirmé, nos moniteurs certifiés vous guideront à travers des cours particuliers ou collectifs, dans une ambiance chaleureuse. Nous sommes également fiers de respecter le bien-être de nos poneys, en leur offrant des soins adaptés et des temps de repos indispensables.
+            </p>
+            <p>
+                Rejoignez-nous pour vivre des moments inoubliables avec vos proches et découvrez la magie de l’équitation dans un cadre naturel exceptionnel.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="tarif">
+    <h2 class="tarif-title">Nos Tarifs</h2>
+    <div class="tarif-container">
+        {% for tarif in tarifs %}
+        <div class="tarif-item">
+            <h3 class="tarif-description">{{ tarif.description }}</h3>
+            <p class="tarif-age">Âge : {{ tarif.ageMin }} - {{ tarif.ageMax }} ans</p>
+            <p class="tarif-price">Prix : {{ tarif.prix }} €</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="club-features">
+    <h2>Pourquoi choisir Grand Galop ?</h2>
+    <div class="features">
+        <div class="feature-item">
+            <img src="{{ url_for('static', filename='images/equipe.jpg') }}" alt="Notre équipe">
+            <h3>Une Équipe Passionnée</h3>
+            <p>Des moniteurs expérimentés pour un enseignement de qualité.</p>
+        </div>
+        <div class="feature-item">
+            <img src="{{ url_for('static', filename='images/poney_bienetre.jpg') }}" alt="Poney en liberté">
+            <h3>Bien-Être Animal</h3>
+            <p>Nos poneys bénéficient de soins réguliers et de temps de repos.</p>
+        </div>
+        <div class="feature-item">
+            <img src="{{ url_for('static', filename='images/planning.jpg') }}" alt="Planning">
+            <h3>Gestion Simplifiée</h3>
+            <p>Un planning en ligne pour gérer vos cours en toute simplicité.</p>
+        </div>
+    </div>
 </section>
 {% endblock %}

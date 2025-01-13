@@ -271,6 +271,17 @@ def getIdTarif(dateNaissance):
             return tarif.idT
     return 1
 
+def getTarifs():
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT * FROM TARIF")
+    tarifs = cursor.fetchall()
+    cursor.close()
+
+    lesTarifs = []
+    for tarif in tarifs:
+        lesTarifs.append(Tarif(tarif[0], tarif[1], tarif[2], tarif[3], tarif[4]))        
+    return lesTarifs
+
 class Poney():
     def __init__(self, poneyID, nomP, age, poidsSupportableMax):
         self.poneyID = poneyID

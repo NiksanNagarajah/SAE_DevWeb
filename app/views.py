@@ -122,7 +122,8 @@ def calendrier():
 
 @app.route('/club')
 def club():
-    return render_template('club.html')
+    print(getTarifs())
+    return render_template('club.html', tarifs=getTarifs())
 
 @app.route('/profil')
 @login_required
