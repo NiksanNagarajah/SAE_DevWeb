@@ -25,7 +25,7 @@
     display: flex; 
     align-items: center; 
     justify-content: flex-start; 
-    height: 85vh; 
+    height: 80vh; 
     width: 100%; 
     position: relative; 
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/Image_du_club.jpg');
@@ -55,8 +55,153 @@
     line-height: 1.6; 
 }
 
+.about-banner img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    /* margin-bottom: 10px; */
+}
+
+.about-banner {
+    margin: auto 20px;
+    max-width: 1200px;
+    /* text-align: center; */
+    /* background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.about-content {
+    display: flex;
+    margin: 20px auto;
+    max-width: 1200px;
+    text-align: justify;
+    line-height: 1.6;
+    font-size: 1rem;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+}
+
+.about-content h1 {
+    font-size: 2rem;
+    color: #002a5c;
+    margin-bottom: 20px;
+}
+
+.club-features {
+    margin: 40px auto;
+    max-width: 1200px;
+    text-align: center;
+}
+
+.club-features h2 {
+    font-size: 2.5rem;
+    color: #002a5c;
+    margin-bottom: 30px;
+}
+
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.feature-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 300px;
+    text-align: center;
+}
+
+.feature-item img {
+    width: 100%;
+    height: auto;
+    border-bottom: 4px solid #002a5c;
+}
+
+.feature-item h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 15px 0;
+}
+
+.feature-item p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 0 15px 15px;
+    color: #555;
+}
+
 @media (max-width: 650px) {
     .column {
         flex: 100%;
     }
+
+    .features {
+        flex-direction: column;
+    }
+
+    .feature-item {
+        max-width: 100%;
+    }
+}
+
+
+.tarif {
+    padding: 40px 20px;
+    text-align: center;
+    margin: auto;
+    max-width: max-content;
+    border-radius: 8px;
+}
+
+.tarif-title {
+    font-size: 2.5rem;
+    color: #002a5c;
+    margin-bottom: 20px;
+}
+
+.tarif-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.tarif-item {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 300px;
+    text-align: left;
+    transition: transform 0.3s ease;
+}
+
+.tarif-item:hover {
+    transform: translateY(-5px);
+}
+
+.tarif-description {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.tarif-age {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.tarif-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #002a5c;
 }
