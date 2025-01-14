@@ -395,10 +395,12 @@ def passerAdmin(id_membre):
 def passerAdherent(id_membre):
     try:
         changerRole(id_membre, 'Adhérent')
+        supprimerReservCoursMoniteur(id_membre)
         supprimerCoursDuMembre(id_membre)
         flash("Le rôle de l'utilisateur a été modifié avec succès.", "success")
     except Exception as e:
         flash("Une erreur est survenue lors de la modification du rôle de l'utilisateur.", "danger")
+        print(e)
     return redirect(url_for('gestion_membres'))
 
 @app.route('/cours_moniteur/<int:id_membre>')

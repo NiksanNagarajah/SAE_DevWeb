@@ -397,6 +397,12 @@ def supprimerCoursDuMembre(idM):
     mysql.connection.commit()
     cursor.close()
 
+def supprimerReservCoursMoniteur(idM):
+    cursor = mysql.connection.cursor()
+    cursor.execute("DELETE FROM RESERVATION WHERE coursID IN (SELECT coursID FROM COURS WHERE idM = %s)", (idM,))
+    mysql.connection.commit()
+    cursor.close()
+
 def supprimerReservationDuCours(coursID):
     cursor = mysql.connection.cursor()
     cursor.execute("DELETE FROM RESERVATION WHERE coursID = %s", (coursID,))
