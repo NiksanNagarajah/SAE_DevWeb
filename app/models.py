@@ -448,7 +448,8 @@ def getMoniteursForCours(idM=None):
     for moniteur in moniteurs:
         if idM and moniteur[0] == idM:
             moniteurCourant = (moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13]))
-        lesMoniteurs.append((moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13])))
+        else: 
+            lesMoniteurs.append((moniteur[0], Utilisateur(moniteur[0], moniteur[1], moniteur[2], moniteur[3], moniteur[4], moniteur[5], moniteur[6], moniteur[7], moniteur[8], moniteur[9], moniteur[10], moniteur[11], moniteur[12], moniteur[13])))
     if idM:
         lesMoniteurs.insert(0, moniteurCourant)
     return lesMoniteurs
