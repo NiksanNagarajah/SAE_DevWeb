@@ -1,6 +1,6 @@
 {
   "width": 553,
-  "height": 432,
+  "height": 457,
   "cx": [
     [ "PONEY", 87 ],
     [ "PAYE", 257 ],
@@ -14,16 +14,16 @@
     [ "MONITEUR", 384 ]
   ],
   "cy": [
-    [ "PONEY", 60 ],
-    [ "PAYE", 60 ],
-    [ "TARIF", 60 ],
-    [ "RESERVATION", 203 ],
-    [ "ADHERENT", 203 ],
-    [ "MEMBRE_PARENT_#1", 203 ],
-    [ "MEMBRE", 203 ],
-    [ "COURS", 338 ],
-    [ "DONNER", 338 ],
-    [ "MONITEUR", 338 ]
+    [ "PONEY", 68 ],
+    [ "PAYE", 68 ],
+    [ "TARIF", 68 ],
+    [ "RESERVATION", 228 ],
+    [ "ADHERENT", 228 ],
+    [ "MEMBRE_PARENT_#1", 228 ],
+    [ "MEMBRE", 228 ],
+    [ "COURS", 363 ],
+    [ "DONNER", 363 ],
+    [ "MONITEUR", 363 ]
   ],
   "shift": [
     [ "PAYE,ADHERENT,0", 0 ],
