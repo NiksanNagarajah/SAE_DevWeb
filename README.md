@@ -35,7 +35,58 @@ Enfin, il suffit de lancer le serveur avec la commande suivante :
 flask run
 ```
 
-Et d'accéder au site à l'aide de l'adresse suivante : `http://127.0.0.1:5000` en utilisant un navigateur web ou en cliquant sur le lien afficher sur le terminal.
+Et d'accéder au site à l'aide de l'adresse suivante : `http://127.0.0.1:5000` en utilisant un navigateur web ou en cliquant sur le lien afficher sur le terminal. 
+
+## Fonctionnalités 
+
+### Gestion des utilisateurs :
+
+- Inscription d'utilisateurs avec validation des données (email, mot de passe, numéro de téléphone, etc.).
+
+- Connexion/déconnexion des utilisateurs.
+
+### Rôles utilisateur : Adhérent, Moniteur, Administrateur, avec des permissions spécifiques.
+
+- Gestion de profils (accès aux informations de l'utilisateur connecté).
+
+### Gestion des cours :
+
+- Création, modification et suppression de cours (par les administrateurs).
+
+- Affichage du calendrier des cours.
+
+- Restrictions sur le nombre maximum de participants par cours.
+
+- Validation des horaires pour éviter des chevauchements pour les poneys, adhérent et moniteurs.
+
+### Gestion des réservations :
+
+- Réservation de cours par les adhérents en fonction des poneys et des disponibilités.
+
+- Validation de contraintes avant réservation comme le respect du poids supportable des poneys. 
+
+- Disponibilité des poneys et des moniteurs. 
+
+- Restriction des moniteurs pour effectuer des réservations. 
+
+### Gestion des poneys :
+
+- Ajout, modification, suppression et récupération des données des poneys.
+Validation pour vérifier si les poneys respectent des périodes de repos entre les cours.
+
+### Système de tarifs :
+
+- Association des utilisateurs à des tarifs spécifiques basés sur leur tranche d'âge.
+
+### Système de rôles et permissions :
+
+- Restriction de certaines actions aux administrateurs ou moniteurs.
+
+- Gestion des rôles des utilisateurs (promotion/déclassement entre rôles).
+
+### Sécurisation et gestion des données :
+
+- Hashage des mots de passe pour la sécurité.
 
 ## Ressources
 
