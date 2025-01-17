@@ -1,6 +1,6 @@
 PONEY : poney_ID[INT(4)], nom_P[VARCHAR(42)], age[INT(4)], poids_Supportable_Max[DECIMAL(10,2)]
 PAYE, 11 ADHERENT, 0N TARIF : cotisation_Annee[INT], payee_Cotisation[BOOLEAN]
-TARIF : id_T[INT(4)], descriptif[VARCHAR(42)], montant[DECIMAL(10,2)]
+TARIF : id_T[INT(4)], descriptif[VARCHAR(42)], age_Min[INT(2)], age_Max[INT(2)], montant[DECIMAL(10,2)]
 :
 
 RESERVATION, 0N ADHERENT, 0N PONEY, 0N COURS : cours_Payee[BOOLEAN]
